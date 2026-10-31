@@ -34,10 +34,26 @@ export default function WagyuShowcase() {
     const ctx = canvas.getContext('2d', { alpha: false });
     if (!ctx) return;
 
-    // Instant O(1) retrieval with last drawn fallback — eliminating search delay
+    // Retrieve target image or nearest ready keyframe
     let imgToDraw = imagesCacheRef.current[targetIndex];
     if (!imgToDraw || !imgToDraw.complete || imgToDraw.naturalWidth === 0) {
-      imgToDraw = lastDrawnImgRef.current || imagesCacheRef.current[0];
+      let radius = 1;
+      while (radius < 25) {
+        const left = targetIndex - radius;
+        const right = targetIndex + radius;
+        if (left >= 0 && imagesCacheRef.current[left]?.complete && imagesCacheRef.current[left].naturalWidth > 0) {
+          imgToDraw = imagesCacheRef.current[left];
+          break;
+        }
+        if (right < WAGYU_TOTAL_FRAMES && imagesCacheRef.current[right]?.complete && imagesCacheRef.current[right].naturalWidth > 0) {
+          imgToDraw = imagesCacheRef.current[right];
+          break;
+        }
+        radius++;
+      }
+      if (!imgToDraw) {
+        imgToDraw = lastDrawnImgRef.current || imagesCacheRef.current[0];
+      }
     }
 
     if (!imgToDraw || !imgToDraw.complete || imgToDraw.naturalWidth === 0) {
@@ -54,21 +70,33 @@ export default function WagyuShowcase() {
     const imgRatio = imgWidth / imgHeight;
     const canvasRatio = canvasWidth / canvasHeight;
 
+    // Fill canvas background to ensure seamless black edge blending
+    ctx.fillStyle = '#080605';
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
     let drawW, drawH, drawX, drawY;
 
     if (canvasRatio > imgRatio) {
-      // Screen is wider than 16:9
+      // Desktop / landscape
       drawW = canvasWidth;
       drawH = canvasWidth / imgRatio;
       drawX = 0;
       // Vertically center with slight upward bias (49%) to frame burger and falling toppings
       drawY = (canvasHeight - drawH) * 0.49;
     } else {
-      // Screen is taller than 16:9 (mobile / portrait)
-      drawH = canvasHeight;
-      drawW = canvasHeight * imgRatio;
-      drawX = (canvasWidth - drawW) * 0.5;
-      drawY = 0;
+      // Mobile / portrait: ensure 100% of burger assembly is visible without side-cropping!
+      const isMobile = window.innerWidth <= 768;
+      if (isMobile) {
+        drawW = canvasWidth * 1.05;
+        drawH = drawW / imgRatio;
+        drawX = (canvasWidth - drawW) * 0.5;
+        drawY = (canvasHeight - drawH) * 0.45;
+      } else {
+        drawH = canvasHeight;
+        drawW = canvasHeight * imgRatio;
+        drawX = (canvasWidth - drawW) * 0.5;
+        drawY = 0;
+      }
     }
 
     ctx.drawImage(imgToDraw, drawX, drawY, drawW, drawH);
@@ -96,22 +124,43 @@ export default function WagyuShowcase() {
   }, [renderFrame]);
 
   /**
-   * Progressive background preloading for all 192 wagyu burger frames
+   * Progressive background preloader:
+   * Phase 1: Keyframe skeleton across all 192 frames (every 8th frame)
+   * Phase 2: Sequential fill-in
    */
   const preloadSubsequentFrames = useCallback(() => {
     if (isPreloadingRef.current) return;
     isPreloadingRef.current = true;
 
+    // Phase 1: Keyframe skeleton across all 192 frames (every 8th frame)
+    const keyframes = [];
+    for (let i = 8; i < WAGYU_TOTAL_FRAMES; i += 8) {
+      keyframes.push(i);
+    }
+    keyframes.push(WAGYU_TOTAL_FRAMES - 1);
+
+    keyframes.forEach((frameNum) => {
+      const img = new Image();
+      img.src = getWagyuFrameUrl(frameNum);
+      img.onload = () => {
+        imagesCacheRef.current[frameNum] = img;
+      };
+    });
+
+    // Phase 2: Sequential fill-in
     let nextIndex = 1;
     const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
-    const MAX_CONCURRENT = isMobile ? 3 : 8;
+    const MAX_CONCURRENT = isMobile ? 4 : 8;
     let activeLoads = 0;
 
     const loadNext = () => {
       while (activeLoads < MAX_CONCURRENT && nextIndex < WAGYU_TOTAL_FRAMES) {
         const idx = nextIndex++;
-        activeLoads++;
+        if (imagesCacheRef.current[idx]) {
+          continue;
+        }
 
+        activeLoads++;
         const img = new Image();
         img.src = getWagyuFrameUrl(idx);
         img.onload = () => {
@@ -120,14 +169,13 @@ export default function WagyuShowcase() {
           loadNext();
         };
         img.onerror = () => {
-          console.warn(`[Wagyu Showcase] Frame ${idx} failed to load from ${img.src}`);
           activeLoads--;
           loadNext();
         };
       }
     };
 
-    loadNext();
+    setTimeout(loadNext, 150);
   }, []);
 
   useEffect(() => {
@@ -141,22 +189,15 @@ export default function WagyuShowcase() {
 
       handleResize();
       renderFrame(0);
+
+      // Start preloading keyframes so full animation is ready when user scrolls here
+      preloadSubsequentFrames();
     };
 
     firstImg.onerror = (err) => {
       console.error('[Wagyu Showcase] Critical: Frame 0 failed to load', err);
       setIsFirstFrameLoaded(true);
     };
-
-    // Lazy load subsequent frames only when approaching Wagyu section
-    const lazyPreloadTrigger = ScrollTrigger.create({
-      trigger: containerRef.current,
-      start: 'top bottom+=80%',
-      once: true,
-      onEnter: () => {
-        preloadSubsequentFrames();
-      },
-    });
 
     // 2. Set up ResizeObserver
     const resizeObserver = new ResizeObserver(() => {
@@ -175,8 +216,8 @@ export default function WagyuShowcase() {
     const trigger = ScrollTrigger.create({
       trigger: containerRef.current,
       start: 'top top',
-      // Responsive runway: 180% on mobile (fast 2 swipes), 500% on desktop
-      end: () => (window.innerWidth <= 768 ? '+=180%' : '+=500%'),
+      // Balanced mobile runway: 300% gives 4-5 natural swipes so full burger assembly plays completely
+      end: () => (window.innerWidth <= 768 ? '+=300%' : '+=500%'),
       pin: stickyRef.current,
       pinSpacing: true,
       anticipatePin: 1,
@@ -248,7 +289,6 @@ export default function WagyuShowcase() {
 
     return () => {
       trigger.kill();
-      lazyPreloadTrigger.kill();
       if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
       resizeObserver.disconnect();
       window.removeEventListener('resize', handleResize);
