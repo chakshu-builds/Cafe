@@ -1,0 +1,1235 @@
+/* ==========================================================================
+   Premium 3D Circular Food Carousel — CULINARY DELIGHTS
+   Rotating Black Wooden Serving Platter with 4 Attached Food Plates
+   01 Pizza · 02 Momos · 03 Coffee · 04 Dessert
+   ========================================================================== */
+
+.culinary-platter-section {
+  position: relative;
+  width: 100%;
+  background-color: #080605;
+  z-index: 9;
+  overflow: hidden;
+  border-top: 1px solid rgba(169, 101, 73, 0.15);
+}
+
+/* Pinned Viewport Container */
+.culinary-platter-frame {
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* ==========================================================================
+   Dynamic Background Layers Stack (Cinematic Cross-fade)
+   - Pizza: Deep burgundy / dark red
+   - Momos: Warm dark brown
+   - Coffee: Deep navy / coffee tones
+   - Dessert: Deep forest green
+   ========================================================================== */
+
+.culinary-background-stack {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.culinary-bg-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.5s ease-out;
+  will-change: opacity;
+}
+
+.culinary-vignette-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(ellipse at center, transparent 35%, rgba(6, 4, 3, 0.75) 100%),
+    linear-gradient(to bottom, rgba(8, 6, 5, 0.65) 0%, transparent 20%, transparent 80%, rgba(8, 6, 5, 0.85) 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ==========================================================================
+   Top HUD Header (Fixed at Top of Pinned Viewport)
+   ========================================================================== */
+
+.culinary-hud-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 25;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2.2rem 4.5rem 1.2rem 4.5rem;
+  background: linear-gradient(to bottom, rgba(8, 6, 5, 0.95) 0%, rgba(8, 6, 5, 0.5) 70%, transparent 100%);
+  pointer-events: none;
+}
+
+.culinary-hud-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.culinary-hud-kicker {
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--color-amber-light);
+}
+
+.culinary-hud-title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
+.culinary-hud-main {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  font-weight: 300;
+  letter-spacing: 0.12em;
+  color: var(--color-cream);
+}
+
+/* Category Navigation Tabs */
+.culinary-hud-nav {
+  display: flex;
+  justify-content: center;
+  pointer-events: auto;
+}
+
+.culinary-hud-tabs {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.65rem;
+  background: rgba(45, 33, 27, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(232, 216, 194, 0.12);
+  border-radius: 999px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.culinary-hud-tab {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.42rem 1.15rem;
+  border-radius: 999px;
+  position: relative;
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.hud-tab-label {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-ivory);
+  opacity: 0.82;
+  transition: color 0.3s ease, opacity 0.3s ease;
+  white-space: nowrap;
+}
+
+.culinary-hud-tab:hover .hud-tab-label {
+  opacity: 1;
+  color: #ffffff;
+}
+
+.culinary-hud-tab.active {
+  background: var(--tab-accent, var(--color-amber));
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+.culinary-hud-tab.active .hud-tab-label {
+  color: #0c0806;
+  font-weight: 600;
+  opacity: 1;
+}
+
+/* Subtle 01/04 Counter */
+.culinary-hud-counter {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.2rem;
+  font-family: var(--font-sans);
+}
+
+.culinary-counter-label {
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--color-amber-light);
+  opacity: 0.8;
+}
+
+.culinary-counter-digits {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.3rem;
+}
+
+.culinary-counter-cur {
+  font-family: var(--font-serif);
+  font-size: 1.85rem;
+  font-weight: 400;
+  color: var(--color-cream);
+  line-height: 1;
+}
+
+.culinary-counter-slash {
+  font-size: 1rem;
+  color: var(--color-amber-light);
+  opacity: 0.65;
+}
+
+.culinary-counter-total {
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--color-ivory);
+  opacity: 0.6;
+}
+
+/* ==========================================================================
+   Main Showcase Stage (Two-Column Layout)
+   Left: Dynamic Editorial Storytelling Content
+   Right: Giant 3D Black Wooden Serving Platter Carousel
+   ========================================================================== */
+
+.culinary-platter-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1.28fr;
+  align-items: center;
+  padding: 5.2rem 4.5vw 4.5rem 5.5vw;
+  z-index: 10;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+/* ==========================================================================
+   1. Left Column: Dynamic Featured Dish Editorial Content
+   ========================================================================== */
+
+.culinary-editorial-col {
+  display: flex;
+  flex-direction: column;
+  max-width: 540px;
+  z-index: 15;
+  position: relative;
+  margin-top: -4.8rem; /* Shifted upwards comfortably away from the bottom */
+}
+
+.editorial-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+}
+
+.editorial-kicker .kicker-line {
+  display: inline-block;
+  width: 28px;
+  height: 2px;
+  border-radius: 2px;
+}
+
+.editorial-kicker .kicker-text {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+.kicker-badge-tag {
+  font-family: var(--font-sans);
+  font-size: 0.64rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  padding: 0.22rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(232, 216, 194, 0.08);
+  border: 1px solid rgba(232, 216, 194, 0.16);
+  color: var(--color-ivory);
+  text-transform: uppercase;
+}
+
+.editorial-hero-title {
+  font-family: var(--font-serif);
+  font-size: clamp(2.2rem, 3.8vw, 3.6rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--color-cream);
+  font-style: normal;
+  margin-bottom: 0.85rem;
+}
+
+/* Primary Crisp Lead Description */
+.editorial-lead-desc {
+  font-family: var(--font-sans);
+  font-size: clamp(0.95rem, 1.15vw, 1.12rem);
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--color-ivory);
+  opacity: 0.9;
+  margin-bottom: 1.85rem;
+  max-width: 480px;
+}
+
+/* Extended Craftsmanship Story */
+.editorial-sub-desc {
+  font-family: var(--font-sans);
+  font-size: clamp(0.85rem, 0.98vw, 0.95rem);
+  font-weight: 300;
+  line-height: 1.65;
+  color: var(--color-ivory);
+  opacity: 0.82;
+  margin-bottom: 1.6rem;
+}
+
+/* Flavor Pills */
+.editorial-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-bottom: 2rem;
+}
+
+.editorial-tag-pill {
+  padding: 0.35rem 0.85rem;
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  background: rgba(45, 33, 27, 0.4);
+  border: 1px solid rgba(232, 216, 194, 0.12);
+  color: var(--color-ivory);
+  transition: all 0.3s ease;
+}
+
+.editorial-tag-pill:hover {
+  background: rgba(45, 33, 27, 0.7);
+  border-color: rgba(232, 216, 194, 0.3);
+  color: #ffffff;
+}
+
+/* Action & Price Row */
+.editorial-action-row {
+  display: flex;
+  align-items: center;
+  gap: 2.2rem;
+  margin-bottom: 2rem;
+}
+
+.editorial-price-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.price-lead-label {
+  font-family: var(--font-sans);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.price-bold-amount {
+  font-family: var(--font-serif);
+  font-size: clamp(1.85rem, 2.4vw, 2.3rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  transition: color 0.4s ease;
+}
+
+/* Explore Menu Button */
+.platter-explore-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.85rem 1.85rem;
+  border-radius: 999px;
+  font-family: var(--font-sans);
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  background: var(--btn-accent, var(--color-amber));
+  color: #0c0806;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 10px 25px var(--btn-glow, rgba(0, 0, 0, 0.5));
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.platter-explore-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+  box-shadow: 0 14px 32px var(--btn-glow, rgba(0, 0, 0, 0.65));
+}
+
+/* Circular Arrow Navigation Controls */
+.editorial-nav-controls {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(232, 216, 194, 0.1);
+}
+
+.platter-arrow-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.platter-circle-arrow-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(35, 26, 22, 0.6);
+  border: 1px solid rgba(232, 216, 194, 0.2);
+  color: var(--color-cream);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  backdrop-filter: blur(8px);
+}
+
+.platter-circle-arrow-btn:hover:not(:disabled) {
+  background: var(--color-cream);
+  color: #0c0806;
+  border-color: var(--color-cream);
+  transform: scale(1.08);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+}
+
+.platter-circle-arrow-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  border-color: rgba(232, 216, 194, 0.08);
+}
+
+.platter-nav-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.platter-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  box-shadow: 0 0 10px currentColor;
+  transition: background-color 0.4s ease;
+}
+
+.platter-status-text {
+  font-family: var(--font-sans);
+  font-size: 0.64rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--color-ivory);
+  opacity: 0.75;
+}
+
+/* ==========================================================================
+   2. Right Column: Giant 3D Black Wooden Serving Platter Carousel
+   ========================================================================== */
+
+.culinary-platter-rig-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  perspective: 1400px;
+}
+
+.culinary-platter-rig {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotateX(15deg) rotateY(-5deg);
+  transform-style: preserve-3d;
+  transition: transform 0.6s ease;
+}
+
+/* The Black Wooden Platter (Rotates as ONE unified object) */
+.black-wooden-platter {
+  position: relative;
+  width: clamp(560px, 58vw, 820px);
+  height: clamp(560px, 58vw, 820px);
+  border-radius: 50%;
+  /* Yakisugi Charred Black Wood Grain Texture */
+  background:
+    radial-gradient(circle at 46% 38%, rgba(255, 255, 255, 0.045) 0%, transparent 50%),
+    repeating-radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.018) 0px, rgba(255, 255, 255, 0.018) 1.5px, transparent 1.5px, transparent 14px),
+    radial-gradient(circle at 50% 50%, #1e1916 0%, #161210 38%, #100d0b 72%, #080605 100%);
+  border: 14px solid #1a1613;
+  box-shadow:
+    inset 0 3px 12px rgba(255, 255, 255, 0.08),
+    inset 0 -5px 22px rgba(0, 0, 0, 0.85),
+    inset 0 0 70px rgba(0, 0, 0, 0.95),
+    0 35px 80px rgba(0, 0, 0, 0.95);
+  transform-origin: 50% 50%;
+  will-change: transform;
+  user-select: none;
+}
+
+/* Concentric Wood Rings Overlay */
+.platter-wood-texture {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    rgba(255, 255, 255, 0.02) 0deg,
+    transparent 45deg,
+    rgba(255, 255, 255, 0.025) 90deg,
+    transparent 135deg,
+    rgba(255, 255, 255, 0.02) 180deg,
+    transparent 225deg,
+    rgba(255, 255, 255, 0.025) 270deg,
+    transparent 315deg,
+    rgba(255, 255, 255, 0.02) 360deg
+  );
+  pointer-events: none;
+}
+
+.platter-rings-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 82%;
+  height: 82%;
+  border-radius: 50%;
+  border: 1px dashed rgba(232, 216, 194, 0.08);
+  pointer-events: none;
+}
+
+.platter-rim-bevel {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+}
+
+.platter-brass-inlay-ring {
+  position: absolute;
+  top: 22px;
+  left: 22px;
+  width: calc(100% - 44px);
+  height: calc(100% - 44px);
+  border-radius: 50%;
+  border: 1.5px solid rgba(198, 139, 89, 0.22);
+  box-shadow: 0 0 12px rgba(198, 139, 89, 0.1);
+  pointer-events: none;
+}
+
+/* Center Antique Brass Hub Medallion */
+.platter-center-hub {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: clamp(80px, 8.5vw, 110px);
+  height: clamp(80px, 8.5vw, 110px);
+  border-radius: 50%;
+  background: radial-gradient(circle at 45% 45%, #6e4e2b 0%, #46311b 50%, #25190e 100%);
+  border: 3px solid rgba(212, 163, 115, 0.35);
+  box-shadow:
+    0 10px 25px rgba(0, 0, 0, 0.9),
+    inset 0 2px 6px rgba(255, 255, 255, 0.25),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.hub-outer-ring {
+  width: 78%;
+  height: 78%;
+  border-radius: 50%;
+  border: 1px dashed rgba(212, 163, 115, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hub-inner-plate {
+  width: 75%;
+  height: 75%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 48% 48%, #5a3e21 0%, #2d1d0f 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.9);
+}
+
+/* Floor Shadow Under Platter (2D Ambient Radial Shadow strictly behind the 3D rig) */
+.platter-floor-shadow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -46%);
+  width: clamp(520px, 54vw, 780px);
+  height: clamp(520px, 54vw, 780px);
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.5) 45%, transparent 72%);
+  filter: blur(34px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ==========================================================================
+   Four Circular Food Plates Attached to the Platter Circumference
+   ========================================================================== */
+
+.food-plate-anchor {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: clamp(160px, 16.5vw, 225px);
+  height: clamp(160px, 16.5vw, 225px);
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 10;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.plate-counter-rotate {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  will-change: transform;
+}
+
+/* Artisan Ceramic Food Plate Dish */
+.artisan-dish-plate {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: #0e0b0a;
+  border: 3px solid rgba(232, 216, 194, 0.18);
+  box-shadow:
+    0 16px 36px rgba(0, 0, 0, 0.9),
+    0 4px 12px rgba(0, 0, 0, 0.6);
+  transition: all 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.plate-rim-highlight {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.plate-food-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 50%;
+  transform: scale(1.02);
+  transition: transform 0.5s ease;
+}
+
+.plate-inner-vignette {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.65);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Active Top-Centre Featured Hero Dish Styling */
+.food-plate-anchor.is-featured-dish {
+  z-index: 20;
+}
+
+.food-plate-anchor.is-featured-dish .artisan-dish-plate {
+  transform: scale(1.12);
+  border-color: var(--dish-accent);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.95),
+    0 0 45px var(--dish-glow),
+    0 0 0 2.5px var(--dish-accent);
+}
+
+.food-plate-anchor.is-featured-dish .plate-food-img {
+  transform: scale(1.06);
+}
+
+/* Hero Badge Tag Above Featured Plate */
+.plate-hero-badge {
+  position: absolute;
+  top: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.22rem 0.65rem;
+  border-radius: 999px;
+  background: var(--dish-accent);
+  color: #0c0806;
+  font-family: var(--font-sans);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 25;
+  animation: heroBadgeFloat 2.5s infinite ease-in-out;
+}
+
+@keyframes heroBadgeFloat {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-3px); }
+}
+
+/* Non-Featured Plates: Subtle Muting + Hover */
+.food-plate-anchor:not(.is-featured-dish) {
+  opacity: 0.85;
+}
+
+.food-plate-anchor:not(.is-featured-dish):hover {
+  opacity: 1;
+}
+
+.food-plate-anchor:not(.is-featured-dish):hover .artisan-dish-plate {
+  transform: scale(1.04);
+  border-color: rgba(232, 216, 194, 0.4);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.95), 0 0 25px var(--dish-glow);
+}
+
+/* Subtitle Label on the Plate */
+.plate-floating-label {
+  position: absolute;
+  bottom: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.22rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(18, 14, 12, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(232, 216, 194, 0.2);
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+.plate-label-number {
+  font-family: var(--font-sans);
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: var(--dish-accent);
+}
+
+.plate-label-name {
+  font-family: var(--font-sans);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-cream);
+}
+
+/* ==========================================================================
+   Luxury Artisanal Bottom Dock & Signature Tasting Navigation
+   Adds high-end atmosphere & removes empty black void at bottom of viewport
+   ========================================================================== */
+
+.culinary-bottom-dock {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 25;
+  padding: 0 4.5rem 1.8rem 4.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+}
+
+.dock-ambient-glow {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 200px;
+  pointer-events: none;
+  opacity: 0.38;
+  transition: background 0.6s ease;
+  z-index: 1;
+}
+
+.dock-flourish-bar {
+  width: 100%;
+  max-width: 1400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  margin-bottom: 1.15rem;
+  position: relative;
+  z-index: 2;
+}
+
+.dock-hairline-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(232, 216, 194, 0.12) 35%,
+    rgba(198, 139, 89, 0.28) 100%
+  );
+}
+
+.dock-flourish-bar .dock-hairline-line:last-child {
+  background: linear-gradient(
+    to left,
+    transparent 0%,
+    rgba(232, 216, 194, 0.12) 35%,
+    rgba(198, 139, 89, 0.28) 100%
+  );
+}
+
+.dock-flourish-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.32rem 1.1rem;
+  background: rgba(22, 17, 14, 0.75);
+  border: 1px solid rgba(198, 139, 89, 0.24);
+  border-radius: 999px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+.flourish-star {
+  color: var(--color-amber-light, #dfba8c);
+  font-size: 0.68rem;
+  opacity: 0.9;
+}
+
+.flourish-text {
+  font-family: var(--font-sans, 'Outfit', sans-serif);
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--color-cream, #f5efe6);
+}
+
+.dock-inner-container {
+  width: 100%;
+  max-width: 1400px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  z-index: 2;
+  pointer-events: auto;
+}
+
+.dock-craft-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.dock-meta-left {
+  text-align: left;
+}
+
+.dock-meta-right {
+  text-align: right;
+}
+
+.dock-meta-accent {
+  font-family: var(--font-sans, 'Outfit', sans-serif);
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--color-amber-light, #dfba8c);
+  opacity: 0.88;
+}
+
+.dock-meta-title {
+  font-family: var(--font-sans, 'Outfit', sans-serif);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-ivory, #ece5db);
+  opacity: 0.65;
+}
+
+.dock-dish-pills {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.38rem 0.75rem;
+  background: rgba(30, 22, 18, 0.7);
+  border: 1px solid rgba(232, 216, 194, 0.16);
+  border-radius: 999px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+}
+
+.dock-pill-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 0.45rem 1.15rem;
+  border-radius: 999px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  position: relative;
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  color: var(--color-ivory, #ece5db);
+}
+
+.dock-pill-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(232, 216, 194, 0.24);
+  color: #ffffff;
+}
+
+.dock-pill-btn.is-active {
+  background: rgba(45, 33, 27, 0.95);
+  border-color: var(--dish-accent);
+  color: #ffffff;
+  box-shadow: 0 4px 18px var(--dish-glow, rgba(0, 0, 0, 0.5));
+}
+
+.dock-pill-num {
+  font-family: var(--font-sans, 'Outfit', sans-serif);
+  font-size: 0.66rem;
+  font-weight: 800;
+  color: var(--dish-accent, #dfba8c);
+  opacity: 0.85;
+}
+
+.dock-pill-btn.is-active .dock-pill-num {
+  opacity: 1;
+}
+
+.dock-pill-name {
+  font-family: var(--font-sans, 'Outfit', sans-serif);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: inherit;
+}
+
+.dock-pill-glow-pip {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: var(--dish-accent);
+  box-shadow: 0 0 8px var(--dish-accent);
+}
+
+/* ==========================================================================
+   Responsive Adaptations
+   ========================================================================== */
+
+/* Tablet & Intermediate Screens (841px to 1180px) */
+@media (max-width: 1180px) {
+  .culinary-hud-header {
+    padding: 1.8rem 2.5rem 1rem 2.5rem;
+  }
+  .culinary-platter-stage {
+    padding: 6rem 2.5vw 3rem 3vw;
+    grid-template-columns: 1fr 1.1fr;
+    gap: 1.5rem;
+  }
+  .editorial-hero-title {
+    font-size: clamp(2.8rem, 4.5vw, 4.5rem);
+  }
+  .black-wooden-platter {
+    width: clamp(480px, 50vw, 620px);
+    height: clamp(480px, 50vw, 620px);
+  }
+  .food-plate-anchor {
+    width: clamp(140px, 14vw, 175px);
+    height: clamp(140px, 14vw, 175px);
+  }
+  .culinary-editorial-col {
+    margin-top: -3.2rem;
+  }
+  .culinary-bottom-dock {
+    padding: 0 2.5rem 1.4rem 2.5rem;
+  }
+  .dock-craft-meta {
+    display: none;
+  }
+  .dock-inner-container {
+    justify-content: center;
+  }
+}
+
+/* Mobile Screens (<= 840px): Touch-Friendly Stacking */
+@media (max-width: 840px) {
+  .culinary-platter-section {
+    padding: 4.5rem 0 3.5rem 0;
+    overflow: visible;
+  }
+
+  .culinary-platter-frame {
+    height: auto;
+    min-height: auto;
+    overflow: visible;
+    position: relative;
+  }
+
+  .culinary-hud-header {
+    position: relative;
+    padding: 0 1.5rem 1.5rem 1.5rem;
+    background: none;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+    pointer-events: auto;
+  }
+
+  .culinary-hud-brand {
+    width: 100%;
+  }
+
+  .culinary-hud-nav {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .culinary-hud-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .culinary-hud-tabs {
+    width: max-content;
+  }
+
+  .culinary-hud-counter {
+    align-self: flex-end;
+  }
+
+  .culinary-platter-stage {
+    grid-template-columns: 1fr;
+    padding: 1rem 1.5rem 2rem 1.5rem;
+    gap: 2.5rem;
+    text-align: center;
+  }
+
+  .culinary-editorial-col {
+    max-width: 100%;
+    align-items: center;
+    margin-top: 0;
+  }
+
+  .editorial-hero-title {
+    font-size: clamp(1.85rem, 6.5vw, 2.6rem);
+    text-align: center;
+  }
+
+  .editorial-lead-desc {
+    text-align: center;
+    font-size: 0.92rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .editorial-kicker {
+    justify-content: center;
+  }
+
+  .editorial-title-wrap {
+    justify-content: center;
+  }
+
+  .editorial-tags {
+    justify-content: center;
+  }
+
+  .editorial-action-row {
+    justify-content: center;
+    gap: 1.5rem;
+  }
+
+  .editorial-nav-controls {
+    justify-content: center;
+  }
+
+  .culinary-platter-rig-wrapper {
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .culinary-platter-rig {
+    transform: rotateX(10deg);
+  }
+
+  .black-wooden-platter {
+    width: clamp(320px, 86vw, 420px);
+    height: clamp(320px, 86vw, 420px);
+    border-width: 10px;
+  }
+
+  .food-plate-anchor {
+    width: clamp(95px, 26vw, 125px);
+    height: clamp(95px, 26vw, 125px);
+  }
+
+  .plate-floating-label {
+    display: none; /* Keep clean on small screens */
+  }
+
+  /* Mobile Bottom Dock */
+  .culinary-bottom-dock {
+    position: relative;
+    padding: 0 1rem;
+    margin-top: 1rem;
+    width: 100%;
+  }
+
+  .dock-ambient-glow {
+    height: 100px;
+  }
+
+  .dock-craft-meta {
+    display: none;
+  }
+
+  .dock-inner-container {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .dock-dish-pills {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.5rem;
+  }
+
+  .dock-dish-pills::-webkit-scrollbar {
+    display: none;
+  }
+
+  .dock-pill-btn {
+    padding: 0.38rem 0.75rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .dock-flourish-bar {
+    margin-bottom: 0.85rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .status-dot-pulse,
+  .footer-cue-arrow,
+  .plate-hero-badge {
+    animation: none !important;
+  }
+  .black-wooden-platter,
+  .plate-counter-rotate,
+  .artisan-dish-plate {
+    transition: none !important;
+  }
+}

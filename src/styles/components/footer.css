@@ -1,0 +1,529 @@
+/* ==========================================================================
+   Luxury Editorial Footer Styles
+   ========================================================================== */
+
+.footer-section {
+  position: relative;
+  background-color: #060504;
+  color: var(--color-ivory);
+  border-top: 1px solid rgba(200, 138, 76, 0.16);
+  z-index: 12;
+  overflow: hidden;
+  padding-top: 5.5rem;
+}
+
+.footer-ambient-glow {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1100px;
+  height: 420px;
+  background: radial-gradient(ellipse at center, rgba(200, 138, 76, 0.07) 0%, rgba(6, 5, 4, 0) 70%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.footer-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2.5rem;
+  position: relative;
+  z-index: 2;
+}
+
+/* ==========================================================================
+   Newsletter Atelier Banner
+   ========================================================================== */
+
+.footer-newsletter-wrap {
+  margin-bottom: 5.5rem;
+}
+
+.footer-newsletter-card {
+  background: linear-gradient(135deg, rgba(22, 18, 15, 0.95) 0%, rgba(14, 11, 9, 0.95) 100%);
+  border: 1px solid rgba(200, 138, 76, 0.22);
+  border-radius: 16px;
+  padding: 3.25rem 3.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 3rem;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.newsletter-text-col {
+  max-width: 580px;
+}
+
+.newsletter-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--color-amber-light);
+  margin-bottom: 0.75rem;
+}
+
+.newsletter-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--color-amber);
+  box-shadow: 0 0 8px rgba(200, 138, 76, 0.8);
+}
+
+.newsletter-title {
+  font-family: var(--font-serif);
+  font-size: clamp(1.8rem, 2.6vw, 2.5rem);
+  font-weight: 800;
+  color: var(--color-cream);
+  line-height: 1.2;
+  margin-bottom: 0.65rem;
+}
+
+.newsletter-desc {
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--color-muted);
+}
+
+.newsletter-form-col {
+  flex-shrink: 0;
+  width: 100%;
+  max-width: 440px;
+}
+
+.newsletter-form {
+  display: flex;
+  gap: 0.65rem;
+  width: 100%;
+}
+
+.newsletter-input-group {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.newsletter-input-icon {
+  position: absolute;
+  left: 1.15rem;
+  color: var(--color-muted);
+  pointer-events: none;
+}
+
+.newsletter-input {
+  width: 100%;
+  padding: 0.85rem 1rem 0.85rem 2.85rem;
+  background-color: rgba(6, 5, 4, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  color: var(--color-cream);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  outline: none;
+}
+
+.newsletter-input:focus {
+  border-color: var(--color-amber);
+  box-shadow: 0 0 12px rgba(200, 138, 76, 0.25);
+}
+
+.newsletter-input::placeholder {
+  color: rgba(158, 147, 137, 0.6);
+}
+
+.newsletter-submit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.85rem 1.65rem;
+  background: linear-gradient(135deg, #d49557 0%, #ba7b3b 100%);
+  color: #0c0907;
+  font-family: var(--font-sans);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.25s var(--ease-luxury), box-shadow 0.25s ease;
+  flex-shrink: 0;
+}
+
+.newsletter-submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(200, 138, 76, 0.35);
+}
+
+.newsletter-success {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.85rem 1.25rem;
+  background: rgba(200, 138, 76, 0.12);
+  border: 1px solid rgba(200, 138, 76, 0.35);
+  border-radius: 8px;
+  font-family: var(--font-sans);
+  font-size: 0.84rem;
+  color: var(--color-amber-light);
+  line-height: 1.45;
+}
+
+.newsletter-success-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--color-amber-light);
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   Main Footer Grid Columns
+   ========================================================================== */
+
+.footer-main-content {
+  padding-bottom: 5rem;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr 1.15fr 1.25fr;
+  gap: 4rem 3rem;
+}
+
+.footer-col-brand {
+  padding-right: 1.5rem;
+}
+
+.footer-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--color-cream);
+  margin-bottom: 1.25rem;
+}
+
+.footer-brand-dot {
+  width: 6px;
+  height: 6px;
+  background-color: var(--color-amber);
+  border-radius: 50%;
+}
+
+.footer-brand-tagline {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--color-muted);
+  margin-bottom: 1.75rem;
+}
+
+.footer-social-links {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.social-link {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-ivory);
+  transition: all 0.3s var(--ease-luxury);
+}
+
+.social-link:hover {
+  background: rgba(200, 138, 76, 0.18);
+  border-color: var(--color-amber);
+  color: var(--color-amber-light);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(200, 138, 76, 0.25);
+}
+
+.footer-col-title {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--color-amber-light);
+  margin-bottom: 1.5rem;
+}
+
+.footer-link-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.footer-nav-link {
+  font-family: var(--font-sans);
+  font-size: 0.84rem;
+  font-weight: 400;
+  color: var(--color-muted);
+  transition: color 0.25s ease, transform 0.25s ease;
+  display: inline-block;
+}
+
+.footer-nav-link:hover {
+  color: var(--color-cream);
+  transform: translateX(3px);
+}
+
+/* Hours List */
+.footer-hours-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.35rem;
+}
+
+.hours-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+}
+
+.hours-day {
+  color: var(--color-muted);
+}
+
+.hours-time {
+  color: var(--color-cream);
+  font-weight: 500;
+}
+
+.footer-kitchen-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  font-family: var(--font-sans);
+  font-size: 0.76rem;
+  line-height: 1.45;
+  color: rgba(158, 147, 137, 0.75);
+}
+
+.kitchen-note-icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--color-amber);
+}
+
+/* Location & Contact */
+.footer-address {
+  font-style: normal;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-bottom: 1.75rem;
+}
+
+.footer-contact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: var(--color-muted);
+}
+
+.contact-icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--color-amber-light);
+}
+
+.contact-link {
+  color: var(--color-muted);
+  transition: color 0.25s ease;
+}
+
+.contact-link:hover {
+  color: var(--color-cream);
+}
+
+.footer-reserve-cta {
+  margin-top: 0.5rem;
+}
+
+.footer-reserve-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.75rem 1.45rem;
+  background: transparent;
+  border: 1px solid rgba(200, 138, 76, 0.4);
+  border-radius: 999px;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-amber-light);
+  transition: all 0.3s var(--ease-luxury);
+}
+
+.footer-reserve-btn:hover {
+  background: rgba(200, 138, 76, 0.15);
+  border-color: var(--color-amber);
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(200, 138, 76, 0.2);
+}
+
+/* ==========================================================================
+   Bottom Legal & Back to Top Bar
+   ========================================================================== */
+
+.footer-bottom-bar {
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  padding: 1.85rem 0 2.25rem 0;
+  background-color: #040302;
+}
+
+.footer-bottom-flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.footer-copyright {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  color: var(--color-muted);
+  letter-spacing: 0.02em;
+}
+
+.footer-legal-links {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.legal-link {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  transition: color 0.2s ease;
+}
+
+.legal-link:hover {
+  color: var(--color-cream);
+}
+
+.legal-sep {
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.footer-back-to-top {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-amber-light);
+  padding: 0.4rem 0.65rem;
+  border-radius: 4px;
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.footer-back-to-top:hover {
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   Responsive Breakpoints for Footer
+   ========================================================================== */
+
+@media (max-width: 1100px) {
+  .footer-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3.5rem 2.5rem;
+  }
+  .footer-newsletter-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 2.75rem 2.5rem;
+    gap: 2rem;
+  }
+  .newsletter-form-col {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .footer-section {
+    padding-top: 4rem;
+  }
+  .footer-container {
+    padding: 0 1.5rem;
+  }
+  .footer-newsletter-wrap {
+    margin-bottom: 4rem;
+  }
+  .footer-newsletter-card {
+    padding: 2rem 1.5rem;
+  }
+  .newsletter-form {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .newsletter-submit-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 0.95rem;
+  }
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 2.75rem;
+  }
+  .footer-col-brand {
+    padding-right: 0;
+  }
+  .footer-bottom-flex {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.25rem;
+  }
+  .footer-legal-links {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}

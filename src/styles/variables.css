@@ -1,0 +1,32 @@
+:root {
+  --color-bg: #0d0a08;
+  --color-bg-rgb: 13, 10, 8;
+  --color-espresso: #140f0c;
+  --color-charcoal: #1c1714;
+  --color-amber: #c88a4c;
+  --color-amber-light: #e0a368;
+  --color-amber-glow: rgba(200, 138, 76, 0.2);
+  --color-cream: #f7f3ec;
+  --color-ivory: #eae2d5;
+  --color-muted: #9e9389;
+  --color-border: rgba(234, 226, 213, 0.12);
+  --color-border-subtle: rgba(234, 226, 213, 0.06);
+
+  /* Global Typography: Outfit */
+  --font-outfit: 'Outfit', sans-serif;
+  --font-primary: 'Outfit', sans-serif;
+  --font-serif: 'Outfit', sans-serif;
+  --font-sans: 'Outfit', sans-serif;
+
+  /* Font Weight Hierarchy */
+  --weight-main-heading: 800;
+  --weight-section-heading: 800;
+  --weight-navigation: 600;
+  --weight-food-title: 700;
+  --weight-paragraph: 400;
+  --weight-button: 700;
+  --weight-label: 500;
+
+  --ease-luxury: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+}

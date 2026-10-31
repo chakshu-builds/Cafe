@@ -1,0 +1,243 @@
+/* ==========================================================================
+   Full-Screen Signature Wagyu Burger Showcase Styles (Edge-to-Edge)
+   ========================================================================== */
+
+.wagyu-fs-container {
+  position: relative;
+  width: 100%;
+  background-color: #060504;
+  z-index: 10;
+  overflow: hidden;
+}
+
+.wagyu-fs-sticky {
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100svh;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Edge-to-Edge Full-Screen 24fps Canvas */
+.wagyu-fs-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  z-index: 1;
+}
+
+/* Seamless Atmospheric Vignette Gradients */
+.wagyu-fs-vignette-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 26vh;
+  background: linear-gradient(to bottom, #060504 0%, rgba(6, 5, 4, 0.72) 40%, rgba(6, 5, 4, 0) 100%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.wagyu-fs-vignette-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 35vh;
+  background: linear-gradient(to top, #060504 0%, rgba(6, 5, 4, 0.8) 45%, rgba(6, 5, 4, 0) 100%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.wagyu-fs-vignette-sides {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(ellipse at center, rgba(6, 5, 4, 0) 50%, rgba(6, 5, 4, 0.55) 100%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Immediate Frame 0 Loading Placeholder */
+.wagyu-fs-loader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #060504;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  transition: opacity 0.6s var(--ease-luxury);
+  pointer-events: none;
+}
+
+.wagyu-fs-loader.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.wagyu-fs-loader-text {
+  font-family: var(--font-sans);
+  font-size: 0.76rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--color-amber-light);
+  opacity: 0.65;
+}
+
+/* ==========================================================================
+   Opening Title Overlay (Lower-Center over opening bun shot)
+   No opaque boxes. Pure floating editorial typography.
+   ========================================================================== */
+
+.wagyu-fs-opening-overlay {
+  position: absolute;
+  bottom: 5.5rem;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  padding: 0 2rem;
+  will-change: opacity, transform;
+}
+
+.wagyu-opening-wrap {
+  text-align: center;
+  max-width: 860px;
+}
+
+.wagyu-main-title {
+  font-family: var(--font-serif);
+  font-size: clamp(2.5rem, 5.5vw, 5.25rem);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.05;
+  color: var(--color-cream);
+  margin-bottom: 0.65rem;
+  text-shadow: 0 4px 30px rgba(0, 0, 0, 0.95), 0 2px 10px rgba(0, 0, 0, 0.85);
+}
+
+.wagyu-subtitle {
+  font-family: var(--font-sans);
+  font-size: clamp(0.72rem, 1vw, 0.84rem);
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--color-amber-light);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9);
+}
+
+.wagyu-subtitle em {
+  font-style: normal;
+}
+
+/* Finale Supporting Editorial Overlay (reveals over final rotated hero shot) */
+.wagyu-fs-finale-overlay {
+  position: absolute;
+  top: 14vh;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  padding: 0 2rem;
+  will-change: opacity, transform;
+}
+
+.wagyu-finale-wrap {
+  text-align: center;
+  max-width: 820px;
+}
+
+.wagyu-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  font-family: var(--font-sans);
+  font-size: clamp(0.68rem, 0.85vw, 0.78rem);
+  font-weight: 600;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--color-amber-light);
+  margin-bottom: 0.85rem;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.95);
+}
+
+.wagyu-eyebrow-line {
+  display: inline-block;
+  width: 28px;
+  height: 1px;
+  background-color: var(--color-amber);
+}
+
+.wagyu-finale-heading {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 4.5vw, 4rem);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-cream);
+  margin-bottom: 0.65rem;
+  text-shadow: 0 4px 30px rgba(0, 0, 0, 0.95);
+}
+
+.wagyu-finale-caption {
+  font-family: var(--font-sans);
+  font-size: clamp(0.95rem, 1.4vw, 1.25rem);
+  font-weight: 400;
+  font-style: normal;
+  color: var(--color-ivory);
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .wagyu-fs-opening-overlay {
+    bottom: 3.5rem;
+    padding: 0 1.25rem;
+  }
+  .wagyu-fs-finale-overlay {
+    top: 10vh;
+    padding: 0 1.25rem;
+  }
+  .wagyu-main-title {
+    font-size: clamp(2rem, 7.5vw, 3.2rem);
+  }
+  .wagyu-subtitle {
+    font-size: 0.68rem;
+    letter-spacing: 0.24em;
+  }
+  .wagyu-finale-heading {
+    font-size: clamp(1.8rem, 6.5vw, 2.8rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wagyu-fs-opening-overlay,
+  .wagyu-fs-finale-overlay {
+    transition: none !important;
+  }
+  .wagyu-fs-loader {
+    transition: none !important;
+  }
+}

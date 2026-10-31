@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-const srcDir = './public/hero-frames';
+const srcDir = './public/frames/hero';
 const files = fs.readdirSync(srcDir).filter(f => f.endsWith('.webp'));
 
 // Natural numeric sorting
@@ -24,14 +24,14 @@ if (!fs.existsSync('src/data')) {
 }
 
 const jsContent = `// Auto-generated verified frame manifest
-// Source: public/hero-frames
+// Source: public/frames/hero
 // Total verified frames: ${files.length}
 // Missing frames noted from continuous numbering: ${JSON.stringify(missing)}
 
 export const FRAME_FILES = ${JSON.stringify(files, null, 2)};
 export const TOTAL_FRAMES = ${files.length};
 export const MISSING_FRAME_NUMBERS = ${JSON.stringify(missing)};
-export const FRAME_DIR = '/hero-frames/';
+export const FRAME_DIR = '/frames/hero/';
 
 export function getFrameUrl(index) {
   const safeIndex = Math.max(0, Math.min(FRAME_FILES.length - 1, index));
@@ -42,7 +42,7 @@ export function getFrameUrl(index) {
 fs.writeFileSync('src/data/framesManifest.js', jsContent, 'utf8');
 
 const jsonContent = JSON.stringify({
-  sourceDir: 'public/hero-frames',
+  sourceDir: 'public/frames/hero',
   totalFrames: files.length,
   missingFrameNumbers: missing,
   dimensions: { width: 1920, height: 1080 },
@@ -51,6 +51,6 @@ const jsonContent = JSON.stringify({
   frames: files
 }, null, 2);
 
-fs.writeFileSync('public/hero-frames/manifest.json', jsonContent, 'utf8');
-console.log('Manifest updated! Source: public/hero-frames | Total:', files.length, '| Missing:', missing);
+fs.writeFileSync('public/frames/hero/manifest.json', jsonContent, 'utf8');
+console.log('Manifest updated! Source: public/frames/hero | Total:', files.length, '| Missing:', missing);
 

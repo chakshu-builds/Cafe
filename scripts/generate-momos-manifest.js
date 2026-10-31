@@ -1,31 +1,14 @@
 import fs from 'fs';
 import path from 'path';
 
-const srcDir = './momos_frames_24fps';
-const destDir = './public/images/momos-frames';
+const destDir = './public/frames/momos';
 
-if (!fs.existsSync(srcDir)) {
-  console.error(`Error: Source directory '${srcDir}' not found!`);
+if (!fs.existsSync(destDir)) {
+  console.error(`Error: Destination directory '${destDir}' not found!`);
   process.exit(1);
 }
 
-if (!fs.existsSync(destDir)) {
-  fs.mkdirSync(destDir, { recursive: true });
-}
-
-// 1. Copy frames to public destination if missing or different size
-const srcFiles = fs.readdirSync(srcDir).filter(f => f.toLowerCase().endsWith('.jpg'));
-console.log(`Found ${srcFiles.length} frames in ${srcDir}. Syncing to ${destDir}...`);
-
-for (const file of srcFiles) {
-  const srcPath = path.join(srcDir, file);
-  const destPath = path.join(destDir, file);
-  if (!fs.existsSync(destPath) || fs.statSync(srcPath).size !== fs.statSync(destPath).size) {
-    fs.copyFileSync(srcPath, destPath);
-  }
-}
-
-// 2. Read destination files and sort naturally
+// Read destination files and sort naturally
 const files = fs.readdirSync(destDir).filter(f => f.toLowerCase().endsWith('.jpg'));
 
 files.sort((a, b) => {
@@ -78,7 +61,7 @@ const jsContent = `// Auto-generated verified momos frame manifest
 export const MOMOS_FRAME_FILES = ${JSON.stringify(files, null, 2)};
 export const MOMOS_TOTAL_FRAMES = ${files.length};
 export const MOMOS_MISSING_FRAMES = ${JSON.stringify(missing)};
-export const MOMOS_FRAME_DIR = '/images/momos-frames/';
+export const MOMOS_FRAME_DIR = '/frames/momos/';
 export const MOMOS_FRAME_DIMS = { width: ${dims.width}, height: ${dims.height} };
 
 export function getMomosFrameUrl(index) {

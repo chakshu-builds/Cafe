@@ -200,7 +200,7 @@ export const MOMOS_FRAME_FILES = [
 ];
 export const MOMOS_TOTAL_FRAMES = 192;
 export const MOMOS_MISSING_FRAMES = [];
-export const MOMOS_FRAME_DIR = '/images/momos-frames/';
+export const MOMOS_FRAME_DIR = '/frames/momos/';
 export const MOMOS_FRAME_DIMS = { width: 1920, height: 1080 };
 
 export function getMomosFrameUrl(index) {

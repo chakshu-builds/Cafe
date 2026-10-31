@@ -607,7 +607,7 @@ export const FRAME_FILES = [
 ];
 export const TOTAL_FRAMES = 600;
 export const MISSING_FRAME_NUMBERS = [];
-export const FRAME_DIR = '/hero-frames/';
+export const FRAME_DIR = '/frames/hero/';
 
 export function getFrameUrl(index) {
   const safeIndex = Math.max(0, Math.min(FRAME_FILES.length - 1, index));

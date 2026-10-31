@@ -200,7 +200,7 @@ export const WAGYU_FRAME_FILES = [
 ];
 export const WAGYU_TOTAL_FRAMES = 192;
 export const WAGYU_MISSING_FRAMES = [];
-export const WAGYU_FRAME_DIR = '/images/wagyu-burger-frames/';
+export const WAGYU_FRAME_DIR = '/frames/wagyu/';
 export const WAGYU_FRAME_DIMS = { width: 1920, height: 1080 };
 
 export function getWagyuFrameUrl(index) {

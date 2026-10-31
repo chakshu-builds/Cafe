@@ -1,0 +1,758 @@
+/* ==========================================================================
+   Japanese Café Editorial Horizontal Scroll Menu Section
+   GSAP ScrollTrigger Pinned Food Experience
+   ========================================================================== */
+
+:root {
+  --jp-warm-ivory: #F5EBDD;
+  --jp-soft-beige: #E8D8C2;
+  --jp-terracotta: #A96549;
+  --jp-espresso: #49352D;
+  --jp-sage-green: #A8B69A;
+  --jp-dusty-rose: #D9A6A0;
+}
+
+/* Outer Section */
+.menu-horizontal-section {
+  position: relative;
+  width: 100%;
+  background-color: #0c0806;
+  z-index: 7;
+  overflow: hidden;
+}
+
+/* Pinned Viewport Container */
+.menu-viewport-frame {
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 40%, rgba(73, 53, 45, 0.3) 0%, rgba(12, 8, 6, 0.98) 75%);
+}
+
+/* Ambient Radial Glow and Atmospheric Depth */
+.menu-ambient-radial-glow {
+  position: absolute;
+  top: 15%;
+  left: 45%;
+  transform: translate(-50%, -50%);
+  width: 900px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(169, 101, 73, 0.12) 0%, rgba(73, 53, 45, 0.05) 45%, transparent 70%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.menu-vignette-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(12, 8, 6, 0.7) 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ==========================================================================
+   HUD Header Overlay (Top Bar)
+   ========================================================================== */
+
+.menu-hud-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 20;
+  padding: 2.25rem 3.5rem 1.25rem 3.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  background: linear-gradient(to bottom, rgba(12, 8, 6, 0.92) 0%, rgba(12, 8, 6, 0.5) 60%, transparent 100%);
+  pointer-events: none;
+}
+
+.menu-hud-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.menu-hud-kicker {
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--jp-terracotta);
+}
+
+.menu-hud-title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+
+.menu-hud-kanji {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--jp-warm-ivory);
+  opacity: 0.85;
+}
+
+.menu-hud-divider {
+  color: var(--jp-terracotta);
+  opacity: 0.6;
+  font-size: 0.85rem;
+}
+
+.menu-hud-subtitle {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  color: var(--jp-soft-beige);
+  opacity: 0.75;
+}
+
+/* Category Filter Pills */
+.menu-hud-categories {
+  display: flex;
+  justify-content: center;
+  pointer-events: auto;
+}
+
+.menu-hud-pills-track {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.6rem;
+  background: rgba(73, 53, 45, 0.45);
+  border: 1px solid rgba(232, 216, 194, 0.16);
+  border-radius: 999px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.menu-hud-pill-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.45rem 1.15rem;
+  border-radius: 999px;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hud-pill-text {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--jp-soft-beige);
+  transition: color 0.3s ease;
+  white-space: nowrap;
+}
+
+.menu-hud-pill-btn:hover .hud-pill-text {
+  color: var(--jp-warm-ivory);
+}
+
+.menu-hud-pill-btn.active {
+  background: var(--jp-terracotta);
+  box-shadow: 0 4px 14px rgba(169, 101, 73, 0.4);
+}
+
+.menu-hud-pill-btn.active .hud-pill-text {
+  color: var(--jp-warm-ivory);
+  font-weight: 600;
+}
+
+/* Live Position Counter */
+.menu-hud-counter {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.2rem;
+  font-family: var(--font-sans);
+}
+
+.hud-counter-label {
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--jp-soft-beige);
+  opacity: 0.65;
+}
+
+.hud-counter-digits {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.25rem;
+}
+
+.hud-counter-current {
+  font-family: var(--font-serif);
+  font-size: 1.65rem;
+  font-weight: 400;
+  color: var(--jp-warm-ivory);
+  line-height: 1;
+}
+
+.hud-counter-slash {
+  font-size: 0.95rem;
+  color: var(--jp-terracotta);
+  opacity: 0.7;
+}
+
+.hud-counter-total {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--jp-soft-beige);
+  opacity: 0.65;
+}
+
+/* ==========================================================================
+   Horizontal Scrolling Track (Circular Dish Presentation)
+   ========================================================================== */
+
+.menu-horizontal-track {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 100%;
+  padding: 0 6vw;
+  gap: clamp(2.5rem, 4vw, 4.5rem);
+  width: max-content;
+  will-change: transform;
+  z-index: 10;
+}
+
+/* ==========================================================================
+   1. Prologue / Introductory Heading Block
+   ========================================================================== */
+
+.menu-intro-block {
+  width: clamp(320px, 25vw, 420px);
+  flex-shrink: 0;
+  padding-right: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.intro-block-kicker {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--jp-terracotta);
+  margin-bottom: 0.85rem;
+}
+
+.intro-block-title {
+  font-family: var(--font-serif);
+  font-size: clamp(2.2rem, 3.4vw, 3.6rem);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  color: var(--jp-warm-ivory);
+  margin-bottom: 1rem;
+}
+
+.intro-block-title em {
+  font-style: italic;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.intro-block-desc {
+  font-family: var(--font-sans);
+  font-size: clamp(0.88rem, 1.05vw, 1rem);
+  font-weight: 400;
+  line-height: 1.65;
+  color: var(--jp-soft-beige);
+  opacity: 0.88;
+  max-width: 360px;
+}
+
+.intro-block-hint {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-top: 1.75rem;
+}
+
+.intro-hint-line {
+  width: 32px;
+  height: 1px;
+  background: var(--jp-terracotta);
+}
+
+.intro-hint-text {
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--jp-terracotta);
+}
+
+.intro-hint-arrow {
+  color: var(--jp-terracotta);
+  font-size: 0.95rem;
+  animation: subtleSlideX 2s infinite ease-in-out;
+}
+
+@keyframes subtleSlideX {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(4px); }
+}
+
+/* ==========================================================================
+   2. Pure Circular Dish Items (NO Square Boxes)
+   ========================================================================== */
+
+.menu-circle-item {
+  width: clamp(210px, 15.5vw, 255px);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  background: transparent;
+  user-select: none;
+  cursor: pointer;
+}
+
+/* Decorative Numbering */
+.menu-circle-num {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  color: var(--jp-soft-beige);
+  opacity: 0.45;
+  margin-bottom: 0.65rem;
+}
+
+/* Circular Food Image Dish (Plate Presentation) */
+.menu-circle-image-wrap {
+  width: clamp(140px, 11vw, 175px);
+  height: clamp(140px, 11vw, 175px);
+  border-radius: 50%;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 1.25rem;
+  border: 1.5px solid rgba(169, 101, 73, 0.35);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.88), 0 0 0 1px rgba(255, 255, 255, 0.04);
+  background-color: #120e0c;
+  transition: transform 0.45s var(--ease-luxury), border-color 0.45s var(--ease-luxury), box-shadow 0.45s var(--ease-luxury);
+}
+
+.menu-circle-item:hover .menu-circle-image-wrap {
+  border-color: rgba(169, 101, 73, 0.9);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.95), 0 0 24px rgba(169, 101, 73, 0.32);
+  transform: translateY(-6px);
+}
+
+.menu-circle-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 50%;
+  transition: transform 0.65s var(--ease-luxury);
+  will-change: transform;
+}
+
+.menu-circle-item:hover .menu-circle-image {
+  transform: scale(1.09);
+}
+
+.menu-circle-image-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  pointer-events: none;
+  box-shadow: inset 0 0 14px rgba(0, 0, 0, 0.55);
+}
+
+/* Category Label */
+.menu-circle-category {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-sans);
+  font-size: 0.64rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--jp-terracotta);
+  opacity: 0.88;
+  margin-bottom: 0.4rem;
+}
+
+.circle-category-kanji {
+  font-family: var(--font-serif);
+  font-size: 0.82rem;
+  opacity: 0.85;
+}
+
+.circle-category-text {
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+}
+
+/* Category Specific Accents */
+.menu-cat-tea .menu-circle-category {
+  color: var(--jp-sage-green);
+}
+
+.menu-cat-signature .menu-circle-category,
+.menu-cat-desserts .menu-circle-category {
+  color: var(--jp-dusty-rose);
+}
+
+.menu-cat-cold-coffee .menu-circle-category {
+  color: var(--jp-soft-beige);
+}
+
+/* Elegant Item Name */
+.menu-circle-name {
+  font-family: var(--font-serif);
+  font-size: clamp(1.18rem, 1.35vw, 1.38rem);
+  font-weight: 700;
+  color: var(--jp-warm-ivory);
+  letter-spacing: 0.02em;
+  line-height: 1.25;
+  margin-bottom: 0.45rem;
+  max-width: 210px;
+  transition: color 0.3s ease;
+}
+
+.menu-circle-item:hover .menu-circle-name {
+  color: #ffffff;
+}
+
+/* Muted Short Description */
+.menu-circle-desc {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 400;
+  line-height: 1.48;
+  color: var(--jp-soft-beige);
+  opacity: 0.82;
+  max-width: 200px;
+  margin: 0 auto 0.75rem auto;
+}
+
+/* Price normally underneath */
+.menu-circle-price {
+  font-family: var(--font-sans);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--jp-terracotta);
+  letter-spacing: 0.05em;
+  display: inline-block;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.menu-circle-item:hover .menu-circle-price {
+  color: var(--jp-warm-ivory);
+  transform: scale(1.08);
+}
+
+/* ==========================================================================
+   3. Outro / Epilogue Block
+   ========================================================================== */
+
+.menu-outro-block {
+  width: clamp(280px, 22vw, 360px);
+  flex-shrink: 0;
+  padding-left: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.outro-block-kicker {
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--jp-terracotta);
+  margin-bottom: 0.85rem;
+}
+
+.outro-block-title {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 3vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--jp-warm-ivory);
+  margin-bottom: 1rem;
+}
+
+.outro-block-title em {
+  font-style: italic;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.outro-block-desc {
+  font-family: var(--font-sans);
+  font-size: clamp(0.88rem, 1.05vw, 1rem);
+  font-weight: 400;
+  line-height: 1.65;
+  color: var(--jp-soft-beige);
+  opacity: 0.88;
+  max-width: 320px;
+}
+
+.outro-block-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--jp-terracotta);
+  margin-top: 1.75rem;
+}
+
+.outro-arrow-symbol {
+  font-size: 1.1rem;
+  animation: subtleBounce 2s infinite ease-in-out;
+}
+
+/* ==========================================================================
+   HUD Footer & Horizontal Progress Bar
+   ========================================================================== */
+
+.menu-hud-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+}
+
+.menu-footer-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  padding: 0.75rem 2rem;
+  background: linear-gradient(to top, rgba(12, 8, 6, 0.85) 0%, transparent 100%);
+}
+
+.footer-hint-pulse {
+  width: 6px;
+  height: 6px;
+  background-color: var(--jp-terracotta);
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(169, 101, 73, 0.8);
+  animation: pulseLight 2s infinite ease-in-out;
+}
+
+@keyframes pulseLight {
+  0%, 100% { opacity: 0.4; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+.footer-hint-text {
+  font-family: var(--font-sans);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--jp-soft-beige);
+  opacity: 0.65;
+}
+
+.menu-progress-track {
+  width: 100%;
+  height: 3px;
+  background: rgba(232, 216, 194, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.menu-progress-bar-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, var(--jp-terracotta) 0%, var(--jp-dusty-rose) 60%, var(--jp-warm-ivory) 100%);
+  transform: scaleX(0);
+  transform-origin: left;
+  will-change: transform;
+}
+
+/* ==========================================================================
+   Responsive Adaptations
+   ========================================================================== */
+
+/* Tablet (841px to 1024px) */
+@media (max-width: 1024px) {
+  .menu-hud-header {
+    padding: 1.75rem 2rem 1rem 2rem;
+  }
+  .menu-hud-pills-track {
+    padding: 0.25rem 0.45rem;
+    gap: 0.3rem;
+  }
+  .menu-hud-pill-btn {
+    padding: 0.4rem 0.85rem;
+  }
+  .hud-pill-text {
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+  }
+  .menu-circle-item {
+    width: clamp(185px, 18vw, 220px);
+  }
+  .menu-circle-image-wrap {
+    width: 130px;
+    height: 130px;
+  }
+}
+
+/* Mobile Screens (<= 840px): Touch-Friendly Native Horizontal Browse */
+@media (max-width: 840px) {
+  .menu-horizontal-section {
+    padding: 5.5rem 0 5.5rem 0;
+    overflow: visible;
+  }
+
+  .menu-viewport-frame {
+    height: auto;
+    min-height: auto;
+    overflow: visible;
+    position: relative;
+    background: none;
+  }
+
+  .menu-ambient-radial-glow {
+    top: 5%;
+    width: 100%;
+    height: 300px;
+  }
+
+  /* HUD Header in Mobile */
+  .menu-hud-header {
+    position: relative;
+    padding: 0 1.5rem 1.5rem 1.5rem;
+    background: none;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+    pointer-events: auto;
+  }
+
+  .menu-hud-brand {
+    width: 100%;
+  }
+
+  .menu-hud-categories {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .menu-hud-categories::-webkit-scrollbar {
+    display: none;
+  }
+
+  .menu-hud-pills-track {
+    width: max-content;
+  }
+
+  .menu-hud-counter {
+    align-self: flex-end;
+  }
+
+  /* Horizontal Track Mobile: Swipe-friendly with snap */
+  .menu-horizontal-track {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    padding: 0 1.5rem 2rem 1.5rem;
+    gap: 1.5rem;
+    width: auto;
+    max-width: 100vw;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .menu-horizontal-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .menu-intro-block,
+  .menu-outro-block {
+    width: clamp(260px, 75vw, 300px);
+    scroll-snap-align: center;
+    padding: 0;
+  }
+
+  .menu-circle-item {
+    width: clamp(165px, 52vw, 200px);
+    scroll-snap-align: center;
+  }
+
+  .menu-circle-image-wrap {
+    width: 125px;
+    height: 125px;
+  }
+
+  .menu-circle-name {
+    font-size: 1.12rem;
+  }
+
+  .menu-circle-desc {
+    font-size: 0.74rem;
+    max-width: 170px;
+  }
+
+  .menu-circle-price {
+    font-size: 0.95rem;
+  }
+
+  .menu-hud-footer {
+    position: relative;
+    margin-top: 1rem;
+    padding: 0 1.5rem;
+  }
+}

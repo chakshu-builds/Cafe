@@ -1,0 +1,266 @@
+/* ==========================================================================
+   Full-Screen Cinematic Pizza Showcase Styles (Edge-to-Edge)
+   ========================================================================== */
+
+.pizza-fs-container {
+  position: relative;
+  width: 100%;
+  background-color: var(--color-bg);
+  z-index: 6;
+}
+
+.pizza-fs-sticky {
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100svh;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Edge-to-Edge Full-Screen Canvas */
+.pizza-fs-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  z-index: 1;
+}
+
+/* Atmospheric Vignette Gradients (Enhances contrast without boxing or covering pizza) */
+.pizza-fs-vignette-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 25vh;
+  background: linear-gradient(to bottom, rgba(13, 10, 8, 0.75) 0%, rgba(13, 10, 8, 0) 100%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.pizza-fs-vignette-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 38vh;
+  background: linear-gradient(to top, rgba(13, 10, 8, 0.88) 0%, rgba(13, 10, 8, 0) 100%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Opening Title Overlay (Lower-Center over whole pizza) */
+.pizza-fs-opening-overlay {
+  position: absolute;
+  bottom: 4.5rem;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  padding: 0 2rem;
+  will-change: opacity, transform;
+}
+
+.opening-overlay-wrap {
+  text-align: center;
+  max-width: 840px;
+}
+
+.pizza-fs-main-title {
+  font-family: var(--font-serif);
+  font-size: clamp(2.5rem, 5.5vw, 5.25rem);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1.05;
+  color: var(--color-cream);
+  margin-bottom: 0.65rem;
+  text-shadow: 0 4px 28px rgba(0, 0, 0, 0.95);
+}
+
+.pizza-fs-subtitle {
+  font-family: var(--font-sans);
+  font-size: clamp(0.72rem, 1vw, 0.82rem);
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--color-amber-light);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.85);
+}
+
+/* Finale Supporting Editorial Overlay */
+.pizza-fs-finale-overlay {
+  position: absolute;
+  bottom: 4.5rem;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+  pointer-events: none;
+  padding: 0 3.5rem;
+  will-change: opacity, transform;
+  opacity: 0;
+}
+
+.pizza-fs-finale-wrap {
+  max-width: 660px;
+  margin-left: max(1rem, calc((100vw - 1440px) / 2 + 2.5rem));
+  text-align: left;
+}
+
+.pizza-fs-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--color-amber-light);
+  margin-bottom: 0.85rem;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+}
+
+.pizza-fs-eyebrow-line {
+  display: inline-block;
+  width: 24px;
+  height: 1px;
+  background-color: var(--color-amber);
+}
+
+.pizza-fs-headline {
+  font-family: var(--font-serif);
+  font-size: clamp(2.4rem, 4.5vw, 4.25rem);
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--color-cream);
+  margin-bottom: 0.95rem;
+  letter-spacing: -0.01em;
+  text-shadow: 0 4px 28px rgba(0, 0, 0, 0.95);
+}
+
+.pizza-fs-headline-italic {
+  display: inline;
+  font-style: italic;
+  font-weight: 800;
+  color: #fff;
+}
+
+.pizza-fs-description {
+  font-family: var(--font-sans);
+  font-size: clamp(0.95rem, 1.25vw, 1.15rem);
+  font-weight: 400;
+  line-height: 1.65;
+  color: var(--color-ivory);
+  opacity: 0.92;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.85);
+  max-width: 520px;
+}
+
+/* Fullscreen Loader for Frame 0 */
+.pizza-fs-loader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--color-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.pizza-fs-loader.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.pizza-fs-loader-text {
+  font-family: var(--font-serif);
+  font-size: 1.6rem;
+  letter-spacing: 0.25em;
+  color: var(--color-cream);
+  font-weight: 800;
+}
+
+/* Responsive Media Queries */
+@media (max-width: 1024px) {
+  .pizza-fs-opening-overlay,
+  .pizza-fs-finale-overlay {
+    bottom: 3.5rem;
+    padding: 0 2rem;
+  }
+  .pizza-fs-finale-wrap {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .pizza-fs-opening-overlay,
+  .pizza-fs-finale-overlay {
+    bottom: 2.75rem;
+    padding: 0 1.5rem;
+  }
+  .pizza-fs-finale-wrap {
+    margin-left: 0;
+    text-align: center;
+  }
+  .pizza-fs-eyebrow {
+    justify-content: center;
+  }
+  .pizza-fs-description {
+    margin: 0 auto;
+  }
+  .pizza-fs-main-title {
+    font-size: 2.4rem;
+  }
+  .pizza-fs-headline {
+    font-size: 2.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .pizza-fs-main-title {
+    font-size: 2rem;
+  }
+  .pizza-fs-subtitle {
+    font-size: 0.68rem;
+    letter-spacing: 0.24em;
+  }
+  .pizza-fs-headline {
+    font-size: 1.9rem;
+  }
+  .pizza-fs-description {
+    font-size: 0.9rem;
+  }
+}
+
+/* Accessibility: Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .hero-scroll-icon {
+    animation: none;
+  }
+  .navbar-container,
+  .nav-link,
+  .hero-loader,
+  .pizza-fs-loader,
+  .menu-hud-pill-btn,
+  .menu-circle-image-wrap,
+  .menu-circle-image,
+  .menu-circle-item {
+    transition: none !important;
+    animation: none !important;
+  }
+}

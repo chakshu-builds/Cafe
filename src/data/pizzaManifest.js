@@ -198,7 +198,7 @@ export const PIZZA_FRAME_FILES = [
 ];
 export const PIZZA_TOTAL_FRAMES = 192;
 export const PIZZA_MISSING_FRAMES = [];
-export const PIZZA_FRAME_DIR = '/images/pizza-frames/';
+export const PIZZA_FRAME_DIR = '/frames/pizza/';
 
 export function getPizzaFrameUrl(index) {
   const safeIndex = Math.max(0, Math.min(PIZZA_FRAME_FILES.length - 1, index));

@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-const srcDir = './public/images/pizza-frames';
+const srcDir = './public/frames/pizza';
 const files = fs.readdirSync(srcDir).filter(f => f.endsWith('.jpg'));
 
 // Natural numeric sorting
@@ -26,7 +26,7 @@ const jsContent = `// Auto-generated verified pizza frame manifest
 export const PIZZA_FRAME_FILES = ${JSON.stringify(files, null, 2)};
 export const PIZZA_TOTAL_FRAMES = ${files.length};
 export const PIZZA_MISSING_FRAMES = ${JSON.stringify(missing)};
-export const PIZZA_FRAME_DIR = '/images/pizza-frames/';
+export const PIZZA_FRAME_DIR = '/frames/pizza/';
 
 export function getPizzaFrameUrl(index) {
   const safeIndex = Math.max(0, Math.min(PIZZA_FRAME_FILES.length - 1, index));
@@ -37,7 +37,7 @@ export function getPizzaFrameUrl(index) {
 fs.writeFileSync('src/data/pizzaManifest.js', jsContent, 'utf8');
 
 const jsonContent = JSON.stringify({
-  sourceDir: 'public/images/pizza-frames',
+  sourceDir: 'public/frames/pizza',
   totalFrames: files.length,
   missingFrameNumbers: missing,
   dimensions: { width: 1920, height: 1080 },
@@ -46,5 +46,5 @@ const jsonContent = JSON.stringify({
   frames: files
 }, null, 2);
 
-fs.writeFileSync('public/images/pizza-frames/manifest.json', jsonContent, 'utf8');
+fs.writeFileSync('public/frames/pizza/manifest.json', jsonContent, 'utf8');
 console.log('Pizza manifest generated! Total:', files.length, 'Missing:', missing);

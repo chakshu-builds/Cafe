@@ -8,18 +8,9 @@ export default defineConfig({
     open: false,
     watch: {
       ignored: [
-        '**/*_frames*/**',
-        '**/*-frames*/**',
-        '**/hero_*/**',
-        '**/hero-*/**',
-        '**/coffee_*/**',
-        '**/pizza_*/**',
-        '**/momos_*/**',
-        '**/wagyu_*/**',
-        '**/Pouring_*/**',
-        '**/public/frames/**',
-        '**/public/images/**',
-        '**/dist/**'
+        '**/dist/**',
+        '**/.cleanup_backup/**',
+        '**/.git/**'
       ]
     }
   }
