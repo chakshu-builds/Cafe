@@ -18,6 +18,9 @@ export default function PizzaShowcase() {
   const imagesCacheRef = useRef(new Array(PIZZA_TOTAL_FRAMES).fill(null));
   const currentFrameIndexRef = useRef(0);
   const isPreloadingRef = useRef(false);
+  const lastDrawnImgRef = useRef(null);
+  const pendingFrameRef = useRef(null);
+  const rafIdRef = useRef(null);
 
   /**
    * Draw the target frame onto the full-screen canvas with edge-to-edge cover math
@@ -29,32 +32,17 @@ export default function PizzaShowcase() {
     const ctx = canvas.getContext('2d', { alpha: false });
     if (!ctx) return;
 
-    // Retrieve target image or nearest loaded fallback to eliminate any black flash
+    // Instant O(1) retrieval with last drawn fallback — eliminating search loops
     let imgToDraw = imagesCacheRef.current[targetIndex];
     if (!imgToDraw || !imgToDraw.complete || imgToDraw.naturalWidth === 0) {
-      let closestDist = Infinity;
-      let closestIdx = -1;
-
-      for (let i = 0; i < PIZZA_TOTAL_FRAMES; i++) {
-        const candidate = imagesCacheRef.current[i];
-        if (candidate && candidate.complete && candidate.naturalWidth > 0) {
-          const dist = Math.abs(i - targetIndex);
-          if (dist < closestDist) {
-            closestDist = dist;
-            closestIdx = i;
-          }
-        }
-      }
-
-      if (closestIdx !== -1) {
-        imgToDraw = imagesCacheRef.current[closestIdx];
-      }
+      imgToDraw = lastDrawnImgRef.current || imagesCacheRef.current[0];
     }
 
     if (!imgToDraw || !imgToDraw.complete || imgToDraw.naturalWidth === 0) {
       return;
     }
 
+    lastDrawnImgRef.current = imgToDraw;
     currentFrameIndexRef.current = targetIndex;
 
     const canvasWidth = canvas.width;
@@ -85,14 +73,15 @@ export default function PizzaShowcase() {
   }, []);
 
   /**
-   * Resize canvas matching the entire viewport with high-DPI scaling
+   * Resize canvas matching the entire viewport with mobile-optimized DPI scaling
    */
   const handleResize = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     const rect = canvas.getBoundingClientRect();
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const isMobile = window.innerWidth <= 768;
+    const dpr = isMobile ? 1 : Math.min(window.devicePixelRatio || 1, 2);
 
     const newWidth = Math.round(rect.width * dpr);
     const newHeight = Math.round(rect.height * dpr);
@@ -112,7 +101,8 @@ export default function PizzaShowcase() {
     isPreloadingRef.current = true;
 
     let nextIndex = 1;
-    const MAX_CONCURRENT = 8;
+    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+    const MAX_CONCURRENT = isMobile ? 3 : 8;
     let activeLoads = 0;
 
     const loadNext = () => {
@@ -149,14 +139,22 @@ export default function PizzaShowcase() {
 
       handleResize();
       renderFrame(0);
-
-      preloadSubsequentFrames();
     };
 
     firstImg.onerror = (err) => {
       console.error('[Pizza Showcase] Critical: Frame 0 failed to load', err);
       setIsFirstFrameLoaded(true);
     };
+
+    // Lazy load subsequent frames only when approaching Pizza section
+    const lazyPreloadTrigger = ScrollTrigger.create({
+      trigger: containerRef.current,
+      start: 'top bottom+=80%',
+      once: true,
+      onEnter: () => {
+        preloadSubsequentFrames();
+      },
+    });
 
     // 2. Set up ResizeObserver
     const resizeObserver = new ResizeObserver(() => {
@@ -169,17 +167,18 @@ export default function PizzaShowcase() {
 
     window.addEventListener('resize', handleResize);
 
-    // 3. Set up GSAP ScrollTrigger with full-screen pinning
+    // 3. Set up GSAP ScrollTrigger with responsive mobile travel & direct touch scrubbing
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const trigger = ScrollTrigger.create({
       trigger: containerRef.current,
       start: 'top top',
-      end: '+=500%', // 5 full viewport heights giving all 192 frames luxurious room
+      // Responsive runway: 180% on mobile (fast, satisfying 2 swipes), 500% on desktop
+      end: () => (window.innerWidth <= 768 ? '+=180%' : '+=500%'),
       pin: stickyRef.current,
       pinSpacing: true,
       anticipatePin: 1,
-      scrub: prefersReducedMotion ? false : 0.15,
+      scrub: prefersReducedMotion ? false : (window.innerWidth <= 768 ? true : 0.15),
       onUpdate: (self) => {
         const progress = self.progress; // 0 to 1
 
@@ -192,7 +191,15 @@ export default function PizzaShowcase() {
         );
 
         if (targetFrame !== currentFrameIndexRef.current) {
-          renderFrame(targetFrame);
+          pendingFrameRef.current = targetFrame;
+          if (!rafIdRef.current) {
+            rafIdRef.current = requestAnimationFrame(() => {
+              if (pendingFrameRef.current !== null) {
+                renderFrame(pendingFrameRef.current);
+              }
+              rafIdRef.current = null;
+            });
+          }
         }
 
         // Opening Title Overlay:
@@ -239,6 +246,8 @@ export default function PizzaShowcase() {
 
     return () => {
       trigger.kill();
+      lazyPreloadTrigger.kill();
+      if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
       resizeObserver.disconnect();
       window.removeEventListener('resize', handleResize);
     };

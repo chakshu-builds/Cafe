@@ -129,19 +129,20 @@ export default function CulinaryDelights() {
       const targetScroll = trigger.start + targetFraction * (trigger.end - trigger.start);
       window.scrollTo({ top: targetScroll, behavior: 'smooth' });
     } else if (platterRef.current) {
-      // Mobile or direct rotation fallback
+      // Mobile or direct rotation fallback - snappy 0.45s response on touch screens
+      const isMobile = window.innerWidth <= 840;
       const targetAngle = index * 90;
       gsap.to(platterRef.current, {
         rotation: targetAngle,
-        duration: 0.85,
-        ease: 'power3.out',
+        duration: isMobile ? 0.45 : 0.85,
+        ease: isMobile ? 'power2.out' : 'power3.out',
       });
       counterRotateRefs.current.forEach((el) => {
         if (el) {
           gsap.to(el, {
             rotation: -targetAngle,
-            duration: 0.85,
-            ease: 'power3.out',
+            duration: isMobile ? 0.45 : 0.85,
+            ease: isMobile ? 'power2.out' : 'power3.out',
           });
         }
       });
@@ -150,7 +151,7 @@ export default function CulinaryDelights() {
         if (layerEl) {
           gsap.to(layerEl, {
             opacity: i === index ? 1 : 0,
-            duration: 0.6,
+            duration: isMobile ? 0.35 : 0.6,
           });
         }
       });

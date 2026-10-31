@@ -24,6 +24,9 @@ export default function Hero() {
   const isPreloadingRef = useRef(false);
   const loadingSetRef = useRef(new Set());
   const renderFrameRef = useRef(null);
+  const pendingFrameRef = useRef(null);
+  const rafIdRef = useRef(null);
+  const lastDrawnImgRef = useRef(null);
 
   /**
    * Request an individual frame on-demand if not already cached/in-flight
@@ -39,7 +42,7 @@ export default function Hero() {
       imagesCacheRef.current[idx] = img;
       loadingSetRef.current.delete(idx);
       // Re-draw if currently viewing or adjacent to this frame
-      if (Math.abs(currentFrameIndexRef.current - idx) <= 1 && renderFrameRef.current) {
+      if (Math.abs(currentFrameIndexRef.current - idx) <= 2 && renderFrameRef.current) {
         renderFrameRef.current(currentFrameIndexRef.current);
       }
     };
@@ -58,36 +61,26 @@ export default function Hero() {
     const ctx = canvas.getContext('2d', { alpha: false });
     if (!ctx) return;
 
-    // Retrieve requested image or fallback to nearest loaded frame to prevent blank screen
-    let imgToDraw = imagesCacheRef.current[targetIndex];
+    const isMobile = window.innerWidth <= 768;
+    // On mobile, snap to step-2 cached frames for efficiency
+    const safeIdx = isMobile ? Math.floor(targetIndex / 2) * 2 : targetIndex;
+
+    // Retrieve requested image or fallback to last drawn / nearest loaded frame to eliminate stutter
+    let imgToDraw = imagesCacheRef.current[safeIdx];
     if (!imgToDraw || !imgToDraw.complete || imgToDraw.naturalWidth === 0) {
-      // Prioritize loading requested frame and nearby forward window
-      for (let offset = 0; offset <= 4; offset++) {
-        requestFrame(targetIndex + offset);
+      // Prioritize loading requested frame window
+      for (let offset = 0; offset <= 4; offset += (isMobile ? 2 : 1)) {
+        requestFrame(safeIdx + offset);
       }
-
-      // Fast outward search from targetIndex to find nearest available frame
-      let radius = 1;
-      while (radius < TOTAL_FRAMES) {
-        const left = targetIndex - radius;
-        const right = targetIndex + radius;
-
-        if (left >= 0 && imagesCacheRef.current[left]?.complete && imagesCacheRef.current[left].naturalWidth > 0) {
-          imgToDraw = imagesCacheRef.current[left];
-          break;
-        }
-        if (right < TOTAL_FRAMES && imagesCacheRef.current[right]?.complete && imagesCacheRef.current[right].naturalWidth > 0) {
-          imgToDraw = imagesCacheRef.current[right];
-          break;
-        }
-        radius++;
-      }
+      // Instant O(1) fallback to last successfully drawn frame or initial frame
+      imgToDraw = lastDrawnImgRef.current || imagesCacheRef.current[0];
     }
 
     if (!imgToDraw || !imgToDraw.complete || imgToDraw.naturalWidth === 0) {
       return;
     }
 
+    lastDrawnImgRef.current = imgToDraw;
     currentFrameIndexRef.current = targetIndex;
 
     const canvasWidth = canvas.width;
@@ -119,14 +112,16 @@ export default function Hero() {
   renderFrameRef.current = renderFrame;
 
   /**
-   * Resize canvas to match display size with high-DPI scaling.
+   * Resize canvas to match display size with mobile-optimized DPI scaling.
    */
   const handleResize = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     const rect = canvas.getBoundingClientRect();
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const isMobile = window.innerWidth <= 768;
+    // On mobile, DPR 1 cuts pixel fill-rate by 75% for 60fps fluidity
+    const dpr = isMobile ? 1 : Math.min(window.devicePixelRatio || 1, 2);
 
     const newWidth = Math.round(rect.width * dpr);
     const newHeight = Math.round(rect.height * dpr);
@@ -140,16 +135,19 @@ export default function Hero() {
 
   /**
    * Two-phase intelligent background preloader:
-   * Phase 1: Keyframe skeleton (every 10th frame) across the whole 600-frame sequence.
-   * Phase 2: High-density concurrent queue for all remaining frames.
+   * Phase 1: Keyframe skeleton across the sequence.
+   * Phase 2: Sequential fill-in with mobile-aware concurrency.
    */
   const preloadSubsequentFrames = useCallback(() => {
     if (isPreloadingRef.current) return;
     isPreloadingRef.current = true;
 
+    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+    const step = isMobile ? 2 : 1; // 300 frames on mobile for 60fps & 50% memory cut
+
     // Phase 1: Preload keyframe skeleton
     const keyframes = [];
-    for (let i = 10; i < TOTAL_FRAMES; i += 10) {
+    for (let i = 10; i < TOTAL_FRAMES; i += (isMobile ? 20 : 10)) {
       keyframes.push(i);
     }
     if (keyframes[keyframes.length - 1] !== TOTAL_FRAMES - 1) {
@@ -157,7 +155,7 @@ export default function Hero() {
     }
 
     let keyIdx = 0;
-    const MAX_KEYFRAME_CONCURRENT = 6;
+    const MAX_KEYFRAME_CONCURRENT = isMobile ? 3 : 6;
     let activeKeyframeLoads = 0;
 
     const loadKeyframes = () => {
@@ -175,12 +173,14 @@ export default function Hero() {
 
     // Phase 2: Sequential fill-in with progressive concurrency
     let nextIndex = 1;
-    const MAX_CONCURRENT = 10;
+    const MAX_CONCURRENT = isMobile ? 3 : 10;
     let activeLoads = 0;
 
     const loadNext = () => {
       while (activeLoads < MAX_CONCURRENT && nextIndex < TOTAL_FRAMES) {
-        const idx = nextIndex++;
+        const idx = nextIndex;
+        nextIndex += step;
+
         if (imagesCacheRef.current[idx]) {
           continue;
         }
@@ -243,22 +243,24 @@ export default function Hero() {
 
     window.addEventListener('resize', handleResize);
 
-    // 3. Set up GSAP ScrollTrigger with explicit pinning
+    // 3. Set up GSAP ScrollTrigger with responsive mobile travel distance and zero-lag scrub
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isMobileDevice = window.innerWidth <= 768;
 
     const trigger = ScrollTrigger.create({
       trigger: containerRef.current,
       start: 'top top',
-      end: () => `+=${window.innerHeight * 6}`, // 6 full viewport heights for complete 600-frame journey
+      // Responsive runway: 2.4 viewport heights on mobile (snappy 2-3 swipes), 6 on desktop
+      end: () => `+=${window.innerHeight * (window.innerWidth <= 768 ? 2.4 : 6)}`,
       pin: stickyRef.current,
       pinSpacing: true,
       anticipatePin: 1,
-      scrub: prefersReducedMotion ? false : 0.15,
+      // On mobile touch screens, scrub: true binds directly to touch physics without rubber-band lag
+      scrub: prefersReducedMotion ? false : (window.innerWidth <= 768 ? true : 0.15),
       onUpdate: (self) => {
         const progress = self.progress; // 0 to 1
 
-        // Complete all 600 frames across 0 -> 0.94 of scroll progress
-        // The remaining 6% firmly locks the final completed steaming coffee shot before unpinning to Our Story
+        // Complete all frames across 0 -> 0.94 of scroll progress
         const frameProgress = Math.min(1, progress / 0.94);
         const targetFrame = Math.min(
           TOTAL_FRAMES - 1,
@@ -266,7 +268,15 @@ export default function Hero() {
         );
 
         if (targetFrame !== currentFrameIndexRef.current) {
-          renderFrame(targetFrame);
+          pendingFrameRef.current = targetFrame;
+          if (!rafIdRef.current) {
+            rafIdRef.current = requestAnimationFrame(() => {
+              if (pendingFrameRef.current !== null) {
+                renderFrame(pendingFrameRef.current);
+              }
+              rafIdRef.current = null;
+            });
+          }
         }
 
         // 1. Center Brand Moment: Fade & glide upward during first 15% of scroll

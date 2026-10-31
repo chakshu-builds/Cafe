@@ -189,10 +189,10 @@ export default function OurStory() {
         scrollTrigger: {
           trigger: containerRef.current,
           start: 'top top',
-          end: '+=200%',
+          end: '+=130%',
           pin: stickyRef.current,
           pinSpacing: true,
-          scrub: 0.8,
+          scrub: 0.1, // Direct, silky touch response on mobile
           anticipatePin: 1,
           invalidateOnRefresh: true,
         },
