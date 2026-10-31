@@ -13,7 +13,7 @@
   position: relative;
   top: 0;
   left: 0;
-  width: 100vw;
+  width: 100%;
   height: 100svh;
   height: 100vh;
   overflow: hidden;
@@ -112,7 +112,7 @@
 
 .pizza-fs-finale-wrap {
   max-width: 660px;
-  margin-left: max(1rem, calc((100vw - 1440px) / 2 + 2.5rem));
+  margin-left: max(1rem, calc((100% - 1440px) / 2 + 2.5rem));
   text-align: left;
 }
 
@@ -210,12 +210,16 @@
 @media (max-width: 768px) {
   .pizza-fs-opening-overlay,
   .pizza-fs-finale-overlay {
-    bottom: 2.75rem;
-    padding: 0 1.5rem;
+    bottom: 2.5rem;
+    padding: 0 1.25rem;
   }
   .pizza-fs-finale-wrap {
     margin-left: 0;
     text-align: center;
+    width: 100%;
+  }
+  .opening-overlay-wrap {
+    width: 100%;
   }
   .pizza-fs-eyebrow {
     justify-content: center;
@@ -224,26 +228,32 @@
     margin: 0 auto;
   }
   .pizza-fs-main-title {
-    font-size: 2.4rem;
+    font-size: clamp(2rem, 7vw, 2.6rem);
   }
   .pizza-fs-headline {
-    font-size: 2.2rem;
+    font-size: clamp(1.85rem, 6.5vw, 2.4rem);
   }
 }
 
 @media (max-width: 480px) {
+  .pizza-fs-opening-overlay,
+  .pizza-fs-finale-overlay {
+    bottom: 2rem;
+    padding: 0 1rem;
+  }
   .pizza-fs-main-title {
-    font-size: 2rem;
+    font-size: clamp(1.65rem, 7.2vw, 2.1rem);
   }
   .pizza-fs-subtitle {
     font-size: 0.68rem;
-    letter-spacing: 0.24em;
+    letter-spacing: 0.22em;
   }
   .pizza-fs-headline {
-    font-size: 1.9rem;
+    font-size: clamp(1.55rem, 6.5vw, 1.95rem);
   }
   .pizza-fs-description {
-    font-size: 0.9rem;
+    font-size: 0.88rem;
+    line-height: 1.5;
   }
 }
 

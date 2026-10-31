@@ -527,3 +527,39 @@
     justify-content: center;
   }
 }
+
+@media (max-width: 480px) {
+  .footer-section {
+    padding-top: 3.25rem;
+  }
+  .footer-container {
+    padding: 0 1.15rem;
+  }
+  .footer-newsletter-wrap {
+    margin-bottom: 3.25rem;
+  }
+  .footer-newsletter-card {
+    padding: 1.65rem 1.15rem;
+    border-radius: 12px;
+  }
+  .newsletter-title {
+    font-size: clamp(1.4rem, 6vw, 1.85rem);
+  }
+  .newsletter-desc {
+    font-size: 0.82rem;
+  }
+  .footer-grid {
+    gap: 2.25rem;
+  }
+  .hours-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+  }
+  .footer-bottom-bar {
+    padding: 1.5rem 0 1.85rem 0;
+  }
+  .footer-copyright {
+    font-size: 0.74rem;
+  }
+}

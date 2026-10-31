@@ -14,7 +14,7 @@
   position: relative;
   top: 0;
   left: 0;
-  width: 100vw;
+  width: 100%;
   height: 100svh;
   height: 100vh;
   overflow: hidden;
@@ -213,11 +213,11 @@
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .wagyu-fs-opening-overlay {
-    bottom: 3.5rem;
+    bottom: 3rem;
     padding: 0 1.25rem;
   }
   .wagyu-fs-finale-overlay {
-    top: 10vh;
+    top: 9.5vh;
     padding: 0 1.25rem;
   }
   .wagyu-main-title {
@@ -229,6 +229,32 @@
   }
   .wagyu-finale-heading {
     font-size: clamp(1.8rem, 6.5vw, 2.8rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .wagyu-fs-opening-overlay {
+    bottom: 2.5rem;
+    padding: 0 1rem;
+  }
+  .wagyu-fs-finale-overlay {
+    top: 8.5vh;
+    padding: 0 1rem;
+  }
+  .wagyu-main-title {
+    font-size: clamp(1.65rem, 7.2vw, 2.1rem);
+  }
+  .wagyu-subtitle {
+    font-size: 0.64rem;
+    letter-spacing: 0.2em;
+  }
+  .wagyu-finale-heading {
+    font-size: clamp(1.55rem, 6.5vw, 2rem);
+    letter-spacing: 0.04em;
+  }
+  .wagyu-finale-caption {
+    font-size: 0.88rem;
+    line-height: 1.48;
   }
 }
 

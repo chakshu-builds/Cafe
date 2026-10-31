@@ -221,6 +221,9 @@
     padding: 4.5rem 1.25rem 4rem 1.25rem;
     min-height: auto;
   }
+  .interlude-hero-title {
+    font-size: clamp(2rem, 7vw, 3rem);
+  }
   .interlude-pills-row {
     gap: 0.5rem;
     margin-bottom: 2rem;
@@ -228,6 +231,41 @@
   .interlude-pill {
     padding: 0.35rem 0.85rem;
     font-size: 0.62rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .grill-interlude-section {
+    padding: 3.5rem 1rem 3rem 1rem;
+  }
+  .interlude-kicker-row {
+    gap: 0.65rem;
+    margin-bottom: 1.35rem;
+  }
+  .interlude-badge {
+    padding: 0.28rem 0.75rem;
+  }
+  .interlude-badge-text {
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+  }
+  .interlude-hero-title {
+    font-size: clamp(1.75rem, 7.5vw, 2.3rem);
+    margin-bottom: 0.95rem;
+  }
+  .interlude-lead-desc {
+    font-size: 0.86rem;
+    line-height: 1.55;
+    margin-bottom: 1.75rem;
+  }
+  .interlude-pills-row {
+    gap: 0.4rem;
+    margin-bottom: 1.85rem;
+  }
+  .interlude-pill {
+    padding: 0.3rem 0.65rem;
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
   }
 }
 

@@ -18,7 +18,7 @@
   position: relative;
   top: 0;
   left: 0;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   height: 100svh;
   overflow: hidden;
@@ -1107,8 +1107,8 @@
 
   .culinary-platter-stage {
     grid-template-columns: 1fr;
-    padding: 1rem 1.5rem 2rem 1.5rem;
-    gap: 2.5rem;
+    padding: 1rem 1rem 1.5rem 1rem;
+    gap: 2rem;
     text-align: center;
   }
 
@@ -1119,14 +1119,15 @@
   }
 
   .editorial-hero-title {
-    font-size: clamp(1.85rem, 6.5vw, 2.6rem);
+    font-size: clamp(1.75rem, 6.5vw, 2.5rem);
     text-align: center;
   }
 
   .editorial-lead-desc {
     text-align: center;
-    font-size: 0.92rem;
-    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    margin-bottom: 1.35rem;
+    max-width: 460px;
   }
 
   .editorial-kicker {
@@ -1143,7 +1144,13 @@
 
   .editorial-action-row {
     justify-content: center;
-    gap: 1.5rem;
+    flex-wrap: wrap;
+    gap: 0.85rem 1.25rem;
+  }
+
+  .platter-explore-btn {
+    padding: 0.75rem 1.35rem;
+    font-size: 0.74rem;
   }
 
   .editorial-nav-controls {
@@ -1151,8 +1158,8 @@
   }
 
   .culinary-platter-rig-wrapper {
-    margin-top: 1rem;
-    margin-bottom: 1.5rem;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
   }
 
   .culinary-platter-rig {
@@ -1160,14 +1167,14 @@
   }
 
   .black-wooden-platter {
-    width: clamp(320px, 86vw, 420px);
-    height: clamp(320px, 86vw, 420px);
-    border-width: 10px;
+    width: clamp(260px, 82vw, 390px);
+    height: clamp(260px, 82vw, 390px);
+    border-width: 8px;
   }
 
   .food-plate-anchor {
-    width: clamp(95px, 26vw, 125px);
-    height: clamp(95px, 26vw, 125px);
+    width: clamp(75px, 24vw, 115px);
+    height: clamp(75px, 24vw, 115px);
   }
 
   .plate-floating-label {
@@ -1177,13 +1184,13 @@
   /* Mobile Bottom Dock */
   .culinary-bottom-dock {
     position: relative;
-    padding: 0 1rem;
-    margin-top: 1rem;
+    padding: 0 0.75rem;
+    margin-top: 0.75rem;
     width: 100%;
   }
 
   .dock-ambient-glow {
-    height: 100px;
+    height: 90px;
   }
 
   .dock-craft-meta {
@@ -1211,13 +1218,78 @@
   }
 
   .dock-pill-btn {
-    padding: 0.38rem 0.75rem;
+    padding: 0.36rem 0.7rem;
+    font-size: 0.68rem;
     white-space: nowrap;
     flex-shrink: 0;
   }
 
   .dock-flourish-bar {
-    margin-bottom: 0.85rem;
+    margin-bottom: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .culinary-hud-header {
+    padding: 0 1rem 1rem 1rem;
+  }
+
+  .culinary-hud-main {
+    font-size: 1.15rem;
+  }
+
+  .editorial-hero-title {
+    font-size: clamp(1.55rem, 6.8vw, 2.1rem);
+  }
+
+  .editorial-lead-desc {
+    font-size: 0.85rem;
+    line-height: 1.48;
+    margin-bottom: 1.15rem;
+  }
+
+  .price-bold-amount {
+    font-size: 1.55rem;
+  }
+
+  .platter-explore-btn {
+    padding: 0.7rem 1.15rem;
+    font-size: 0.72rem;
+  }
+
+  .black-wooden-platter {
+    width: clamp(235px, 78vw, 310px);
+    height: clamp(235px, 78vw, 310px);
+    border-width: 6px;
+  }
+
+  .food-plate-anchor {
+    width: clamp(68px, 22vw, 92px);
+    height: clamp(68px, 22vw, 92px);
+  }
+
+  .culinary-bottom-dock {
+    padding: 0 0.5rem;
+  }
+
+  .dock-flourish-badge {
+    padding: 0.22rem 0.65rem;
+  }
+
+  .flourish-text {
+    font-size: 0.58rem;
+    letter-spacing: 0.2em;
+  }
+
+  .dock-dish-pills {
+    justify-content: flex-start;
+    padding: 0.25rem 0.25rem;
+    gap: 0.35rem;
+  }
+
+  .dock-pill-btn {
+    padding: 0.32rem 0.58rem;
+    font-size: 0.64rem;
   }
 }
 
