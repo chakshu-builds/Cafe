@@ -160,6 +160,7 @@
   pointer-events: none;
   padding: 0 2rem;
   will-change: opacity, transform;
+  opacity: 0;
 }
 
 .wagyu-finale-wrap {

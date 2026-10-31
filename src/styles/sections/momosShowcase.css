@@ -132,6 +132,7 @@
   display: flex;
   justify-content: center;
   padding: 0 2rem;
+  opacity: 1;
 }
 
 /* 2. Middle: Top-Left, framing open basket & rising steam */
@@ -140,6 +141,7 @@
   left: 8vw;
   max-width: 640px;
   padding: 0 1.5rem;
+  opacity: 0;
 }
 
 /* 3. Close-up: Mid-Left, opposite the chopsticks and held momo on right */
@@ -149,6 +151,7 @@
   transform: translateY(-50%);
   max-width: 540px;
   padding: 0 1.5rem;
+  opacity: 0;
 }
 
 /* 4. Ending: Upper-Center, editorial finale over held final steaming basket */
@@ -159,6 +162,7 @@
   display: flex;
   justify-content: center;
   padding: 0 2rem;
+  opacity: 0;
 }
 
 /* Shared Editorial Typography Elements */
