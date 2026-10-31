@@ -40,7 +40,7 @@ export default function Footer() {
       {/* ===================================================================
           Top VIP Newsletter & Reservation Banner
           =================================================================== */}
-      <div className="footer-newsletter-wrap">
+      <div className="footer-newsletter-wrap" id="reserve">
         <div className="footer-container">
           <div className="footer-newsletter-card">
             <div className="newsletter-text-col">

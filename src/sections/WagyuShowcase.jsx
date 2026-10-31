@@ -1,10 +1,13 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import React, { useRef, useCallback } from 'react';
 import { WAGYU_TOTAL_FRAMES, getWagyuFrameUrl } from '../data/wagyuManifest';
+import { useFrameScrubber } from '../hooks/useFrameScrubber';
 
-gsap.registerPlugin(ScrollTrigger);
-
+/**
+ * WagyuShowcase — Chef Special Flame-Grilled Wagyu Burger Storytelling Section
+ *
+ * Uses `useFrameScrubber` for 60fps/120fps hardware-accelerated canvas scrubbing,
+ * responsive mobile framing (zero side-crop), and 2-phase skeleton preloading.
+ */
 export default function WagyuShowcase() {
   const containerRef = useRef(null);
   const stickyRef = useRef(null);
@@ -14,286 +17,55 @@ export default function WagyuShowcase() {
   const openingTitleRef = useRef(null);
   const finaleTitleRef = useRef(null);
 
-  const [isFirstFrameLoaded, setIsFirstFrameLoaded] = useState(false);
-
-  // Mutable refs to prevent React re-renders during high-frequency scroll scrubbing
-  const imagesCacheRef = useRef(new Array(WAGYU_TOTAL_FRAMES).fill(null));
-  const currentFrameIndexRef = useRef(0);
-  const isPreloadingRef = useRef(false);
-  const lastDrawnImgRef = useRef(null);
-  const pendingFrameRef = useRef(null);
-  const rafIdRef = useRef(null);
-
-  /**
-   * Render the target frame onto the full-screen canvas with edge-to-edge cover math
-   */
-  const renderFrame = useCallback((targetIndex) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d', { alpha: false });
-    if (!ctx) return;
-
-    // Retrieve target image or nearest ready keyframe
-    let imgToDraw = imagesCacheRef.current[targetIndex];
-    if (!imgToDraw || !imgToDraw.complete || imgToDraw.naturalWidth === 0) {
-      let radius = 1;
-      while (radius < 25) {
-        const left = targetIndex - radius;
-        const right = targetIndex + radius;
-        if (left >= 0 && imagesCacheRef.current[left]?.complete && imagesCacheRef.current[left].naturalWidth > 0) {
-          imgToDraw = imagesCacheRef.current[left];
-          break;
-        }
-        if (right < WAGYU_TOTAL_FRAMES && imagesCacheRef.current[right]?.complete && imagesCacheRef.current[right].naturalWidth > 0) {
-          imgToDraw = imagesCacheRef.current[right];
-          break;
-        }
-        radius++;
-      }
-      if (!imgToDraw) {
-        imgToDraw = lastDrawnImgRef.current || imagesCacheRef.current[0];
-      }
-    }
-
-    if (!imgToDraw || !imgToDraw.complete || imgToDraw.naturalWidth === 0) {
-      return;
-    }
-
-    lastDrawnImgRef.current = imgToDraw;
-    currentFrameIndexRef.current = targetIndex;
-
-    const canvasWidth = canvas.width;
-    const canvasHeight = canvas.height;
-    const imgWidth = imgToDraw.naturalWidth;
-    const imgHeight = imgToDraw.naturalHeight;
-    const imgRatio = imgWidth / imgHeight;
-    const canvasRatio = canvasWidth / canvasHeight;
-
-    // Fill canvas background to ensure seamless black edge blending
-    ctx.fillStyle = '#080605';
-    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-
-    let drawW, drawH, drawX, drawY;
-
-    if (canvasRatio > imgRatio) {
-      // Desktop / landscape
-      drawW = canvasWidth;
-      drawH = canvasWidth / imgRatio;
-      drawX = 0;
-      // Vertically center with slight upward bias (49%) to frame burger and falling toppings
-      drawY = (canvasHeight - drawH) * 0.49;
-    } else {
-      // Mobile / portrait: ensure 100% of burger assembly is visible without side-cropping!
-      const isMobile = window.innerWidth <= 768;
-      if (isMobile) {
-        drawW = canvasWidth * 1.05;
-        drawH = drawW / imgRatio;
-        drawX = (canvasWidth - drawW) * 0.5;
-        drawY = (canvasHeight - drawH) * 0.45;
+  // High-performance direct DOM style updates on scroll scrub
+  const handleProgressUpdate = useCallback((progress) => {
+    // 1. OPENING TITLE OVERLAY (0.0 -> 0.26)
+    // Visible at start during toasted bun shot (0 -> 0.14), fades out smoothly as assembly begins (0.14 -> 0.26)
+    if (openingTitleRef.current) {
+      let op = 1;
+      if (progress <= 0.14) {
+        op = 1;
+      } else if (progress >= 0.26) {
+        op = 0;
       } else {
-        drawH = canvasHeight;
-        drawW = canvasHeight * imgRatio;
-        drawX = (canvasWidth - drawW) * 0.5;
-        drawY = 0;
+        op = 1 - (progress - 0.14) / (0.26 - 0.14);
       }
+      openingTitleRef.current.style.opacity = op.toFixed(3);
+      openingTitleRef.current.style.transform = `translateY(${((1 - op) * -22).toFixed(1)}px)`;
+      openingTitleRef.current.style.pointerEvents = op > 0.1 ? 'auto' : 'none';
     }
 
-    ctx.drawImage(imgToDraw, drawX, drawY, drawW, drawH);
+    // 2. FINALE TITLE OVERLAY (0.84 -> 1.00)
+    // Appears after rotation completes over the final held hero shot (0.84 -> 0.90), stays visible through 1.00
+    if (finaleTitleRef.current) {
+      let op = 0;
+      if (progress < 0.84) {
+        op = 0;
+      } else if (progress > 0.90) {
+        op = 1;
+      } else {
+        op = (progress - 0.84) / (0.90 - 0.84);
+      }
+      finaleTitleRef.current.style.opacity = op.toFixed(3);
+      finaleTitleRef.current.style.transform = `translateY(${((1 - op) * 20).toFixed(1)}px)`;
+      finaleTitleRef.current.style.pointerEvents = op > 0.1 ? 'auto' : 'none';
+    }
   }, []);
 
-  /**
-   * Resize canvas matching viewport with mobile-optimized DPI scaling
-   */
-  const handleResize = useCallback(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const rect = canvas.getBoundingClientRect();
-    const isMobile = window.innerWidth <= 768;
-    const dpr = isMobile ? 1 : Math.min(window.devicePixelRatio || 1, 2);
-
-    const newWidth = Math.round(rect.width * dpr);
-    const newHeight = Math.round(rect.height * dpr);
-
-    if (canvas.width !== newWidth || canvas.height !== newHeight) {
-      canvas.width = newWidth;
-      canvas.height = newHeight;
-      renderFrame(currentFrameIndexRef.current);
-    }
-  }, [renderFrame]);
-
-  /**
-   * Progressive background preloader:
-   * Phase 1: Keyframe skeleton across all 192 frames (every 8th frame)
-   * Phase 2: Sequential fill-in
-   */
-  const preloadSubsequentFrames = useCallback(() => {
-    if (isPreloadingRef.current) return;
-    isPreloadingRef.current = true;
-
-    // Phase 1: Keyframe skeleton across all 192 frames (every 8th frame)
-    const keyframes = [];
-    for (let i = 8; i < WAGYU_TOTAL_FRAMES; i += 8) {
-      keyframes.push(i);
-    }
-    keyframes.push(WAGYU_TOTAL_FRAMES - 1);
-
-    keyframes.forEach((frameNum) => {
-      const img = new Image();
-      img.src = getWagyuFrameUrl(frameNum);
-      img.onload = () => {
-        imagesCacheRef.current[frameNum] = img;
-      };
-    });
-
-    // Phase 2: Sequential fill-in
-    let nextIndex = 1;
-    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
-    const MAX_CONCURRENT = isMobile ? 4 : 8;
-    let activeLoads = 0;
-
-    const loadNext = () => {
-      while (activeLoads < MAX_CONCURRENT && nextIndex < WAGYU_TOTAL_FRAMES) {
-        const idx = nextIndex++;
-        if (imagesCacheRef.current[idx]) {
-          continue;
-        }
-
-        activeLoads++;
-        const img = new Image();
-        img.src = getWagyuFrameUrl(idx);
-        img.onload = () => {
-          imagesCacheRef.current[idx] = img;
-          activeLoads--;
-          loadNext();
-        };
-        img.onerror = () => {
-          activeLoads--;
-          loadNext();
-        };
-      }
-    };
-
-    setTimeout(loadNext, 150);
-  }, []);
-
-  useEffect(() => {
-    // 1. Immediately preload Opening Frame (Frame 0 = frame_0001.jpg)
-    const firstImg = new Image();
-    firstImg.src = getWagyuFrameUrl(0);
-
-    firstImg.onload = () => {
-      imagesCacheRef.current[0] = firstImg;
-      setIsFirstFrameLoaded(true);
-
-      handleResize();
-      renderFrame(0);
-
-      // Start preloading keyframes so full animation is ready when user scrolls here
-      preloadSubsequentFrames();
-    };
-
-    firstImg.onerror = (err) => {
-      console.error('[Wagyu Showcase] Critical: Frame 0 failed to load', err);
-      setIsFirstFrameLoaded(true);
-    };
-
-    // 2. Set up ResizeObserver
-    const resizeObserver = new ResizeObserver(() => {
-      handleResize();
-    });
-
-    if (canvasRef.current) {
-      resizeObserver.observe(canvasRef.current);
-    }
-
-    window.addEventListener('resize', handleResize);
-
-    // 3. Set up GSAP ScrollTrigger with responsive mobile travel & direct touch scrubbing
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    const trigger = ScrollTrigger.create({
-      trigger: containerRef.current,
-      start: 'top top',
-      // Balanced mobile runway: 300% gives 4-5 natural swipes so full burger assembly plays completely
-      end: () => (window.innerWidth <= 768 ? '+=300%' : '+=500%'),
-      pin: stickyRef.current,
-      pinSpacing: true,
-      anticipatePin: 1,
-      scrub: prefersReducedMotion ? false : (window.innerWidth <= 768 ? true : 0.15),
-      onUpdate: (self) => {
-        const progress = self.progress; // 0.0 -> 1.0
-
-        // All 192 frames complete within 0 -> 0.86 of scroll progress
-        // The remaining 14% firmly locks the final rotated hero burger close-up in place
-        const frameProgress = Math.min(1, progress / 0.86);
-        const targetFrame = Math.min(
-          WAGYU_TOTAL_FRAMES - 1,
-          Math.max(0, Math.floor(frameProgress * WAGYU_TOTAL_FRAMES))
-        );
-
-        if (targetFrame !== currentFrameIndexRef.current) {
-          pendingFrameRef.current = targetFrame;
-          if (!rafIdRef.current) {
-            rafIdRef.current = requestAnimationFrame(() => {
-              if (pendingFrameRef.current !== null) {
-                renderFrame(pendingFrameRef.current);
-              }
-              rafIdRef.current = null;
-            });
-          }
-        }
-
-        // =====================================================================
-        // Opening Title Overlay:
-        // SIGNATURE WAGYU / PREMIUM CRAFTED BURGER
-        // Visible at start during opening toasted bun shot (0 -> 0.14)
-        // Fades out smoothly as assembly begins (0.14 -> 0.26)
-        // Completely hidden during main assembly and hero rotation (0.26 -> 0.84)
-        // =====================================================================
-        if (openingTitleRef.current) {
-          let op = 1;
-          if (progress <= 0.14) {
-            op = 1;
-          } else if (progress >= 0.26) {
-            op = 0;
-          } else {
-            op = 1 - (progress - 0.14) / (0.26 - 0.14);
-          }
-          openingTitleRef.current.style.opacity = op.toFixed(3);
-          openingTitleRef.current.style.transform = `translateY(${((1 - op) * -22).toFixed(1)}px)`;
-          openingTitleRef.current.style.pointerEvents = op > 0.1 ? 'auto' : 'none';
-        }
-
-        // =====================================================================
-        // Finale Title Overlay:
-        // Appears after rotation completes over the final held hero shot (0.84 -> 0.90)
-        // Stays visible through 1.00
-        // =====================================================================
-        if (finaleTitleRef.current) {
-          let op = 0;
-          if (progress < 0.84) {
-            op = 0;
-          } else if (progress > 0.90) {
-            op = 1;
-          } else {
-            op = (progress - 0.84) / (0.90 - 0.84);
-          }
-          finaleTitleRef.current.style.opacity = op.toFixed(3);
-          finaleTitleRef.current.style.transform = `translateY(${((1 - op) * 20).toFixed(1)}px)`;
-          finaleTitleRef.current.style.pointerEvents = op > 0.1 ? 'auto' : 'none';
-        }
-      },
-    });
-
-    return () => {
-      trigger.kill();
-      if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
-      resizeObserver.disconnect();
-      window.removeEventListener('resize', handleResize);
-    };
-  }, [handleResize, renderFrame, preloadSubsequentFrames]);
+  const { isFirstFrameLoaded } = useFrameScrubber({
+    totalFrames: WAGYU_TOTAL_FRAMES,
+    getFrameUrl: getWagyuFrameUrl,
+    containerRef,
+    stickyRef,
+    canvasRef,
+    verticalBias: 0.49,
+    mobileVerticalBias: 0.45,
+    mobileScale: 1.05,
+    mobileRunway: '+=300%',
+    desktopRunway: '+=500%',
+    frameProgressRatio: 0.86,
+    onProgressUpdate: handleProgressUpdate,
+  });
 
   return (
     <section
@@ -319,15 +91,12 @@ export default function WagyuShowcase() {
           aria-label="Full-screen cinematic commercial of Chef Special Burger assembling in mid-air with lettuce, tomato, flame-grilled wagyu patty, melted cheddar, crispy bacon, pickles, and sesame seed brioche bun"
         />
 
-        {/* Seamless Atmospheric Gradient Vignettes (Blends dark CULINARY DELIGHTS background into warm amber dining footage) */}
+        {/* Atmospheric Gradient Vignettes */}
         <div className="wagyu-fs-vignette-top" aria-hidden="true" />
         <div className="wagyu-fs-vignette-bottom" aria-hidden="true" />
         <div className="wagyu-fs-vignette-sides" aria-hidden="true" />
 
-        {/* ===================================================================
-            Opening Title Overlay (Lower-Center of the viewport)
-            "CHEF SPCL. BURGER / FLAME GRILLED PERFECTION"
-            =================================================================== */}
+        {/* 1. Opening Title Overlay (Lower-Center) */}
         <div ref={openingTitleRef} className="wagyu-fs-opening-overlay">
           <div className="wagyu-opening-wrap">
             <h2 className="wagyu-main-title">CHEF SPCL. BURGER</h2>
@@ -335,9 +104,7 @@ export default function WagyuShowcase() {
           </div>
         </div>
 
-        {/* ===================================================================
-            Finale Title Overlay (Upper-Center, reveals over final hero rotation shot)
-            =================================================================== */}
+        {/* 2. Finale Title Overlay (Upper-Center) */}
         <div ref={finaleTitleRef} className="wagyu-fs-finale-overlay">
           <div className="wagyu-finale-wrap">
             <div className="wagyu-eyebrow">

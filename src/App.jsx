@@ -16,13 +16,43 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function App() {
   useEffect(() => {
-    // Sort all ScrollTriggers strictly by DOM order and recalculate start/end positions
-    const timeout = setTimeout(() => {
+    // 1. Refresh ScrollTrigger once web fonts (Outfit, Cormorant Garamond, Inter) are fully rendered
+    let isMounted = true;
+
+    const refreshScrollTriggers = () => {
+      if (!isMounted) return;
       ScrollTrigger.sort();
       ScrollTrigger.refresh();
-    }, 250);
+    };
 
-    return () => clearTimeout(timeout);
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        refreshScrollTriggers();
+      });
+    }
+
+    // 2. Safety fallback refresh after initial DOM paint and layout settling
+    const timer = setTimeout(refreshScrollTriggers, 300);
+
+    // 3. Coordinated orientation change / window resize refresh with debounce
+    let resizeTimer = null;
+    const handleOrientationOrResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        refreshScrollTriggers();
+      }, 150);
+    };
+
+    window.addEventListener('orientationchange', handleOrientationOrResize);
+    window.addEventListener('resize', handleOrientationOrResize);
+
+    return () => {
+      isMounted = false;
+      clearTimeout(timer);
+      clearTimeout(resizeTimer);
+      window.removeEventListener('orientationchange', handleOrientationOrResize);
+      window.removeEventListener('resize', handleOrientationOrResize);
+    };
   }, []);
 
   return (
